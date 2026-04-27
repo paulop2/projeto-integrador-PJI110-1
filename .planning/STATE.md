@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 Phase: 2 of 6 (Autenticação)
 Plan: 3 of 6 in current phase
 Status: In progress
-Last activity: 2026-04-27 — Completed 02-03 plan (frontend auth infrastructure)
+Last activity: 2026-04-27 — Completed 02-02 plan (password reset flow)
 
 Progress: [████████████████░░░░] 50%
 
@@ -36,6 +36,7 @@ Progress: [████████████████░░░░] 50%
 
 *Updated after each plan completion*
 | Phase 02-autentica-o P03 | 2min | 2 tasks | 2 files |
+| Phase 02-autentica-o P02 | 5min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -52,6 +53,7 @@ Recent decisions affecting current work:
 - Auth: Raw SQL used for display name resolution (Professor/Responsavel ORM models don't exist yet)
 - Auth: Admin seed hash fixed in DB (original migration 0001 hash was for "secret", not "admin123" as commented)
 - [Phase 02-autentica-o]: localStorage chosen over sessionStorage for token persistence — With 7-day JWT expiry and automatic renewal, sessionStorage offered no real security benefit for prototype
+- [Phase 02-autentica-o]: Used timezone-aware datetime comparison with fallback for naive SQLite datetimes to prevent runtime TypeError during token expiration check — SQLite stores naive datetimes; comparing offset-naive and offset-aware datetimes raises TypeError. Added tzinfo check in validate_and_consume_token to replace naive with UTC timezone before comparison.
 
 ### Pending Todos
 
@@ -69,5 +71,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-27
-Stopped at: Completed 02-03-PLAN.md (frontend auth infrastructure)
+Stopped at: Completed 02-02-PLAN.md (password reset flow)
 Resume file: None
