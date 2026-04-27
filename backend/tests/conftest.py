@@ -7,11 +7,18 @@ Overrides the FastAPI `get_db` dependency so every request uses the test session
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
 from sqlalchemy.orm import sessionmaker
 
 from src.database import Base, get_db
 from src.main import app
 from src.models.usuario import Usuario, TipoUsuario
+from src.models.aluno import Aluno
+from src.models.turma import Turma
+from src.models.disciplina import Disciplina
+from src.models.professor import Professor
+from src.models.responsavel import Responsavel
+from src.models.professor_turma import ProfessorTurma
 from src.auth.service import hash_password, create_access_token
 
 
@@ -24,6 +31,7 @@ def test_db():
     engine = create_engine(
         TEST_DATABASE_URL,
         connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
     )
     Base.metadata.create_all(bind=engine)
     TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
