@@ -22,8 +22,8 @@ Separação frontend/backend para permitir trabalho paralelo entre os membros da
 
 | Camada | Tecnologia |
 |--------|------------|
-| **Backend** | Python 3.12 + FastAPI + SQLAlchemy 2.0 (síncrono) + Alembic |
-| **Frontend** | React 18 + TypeScript + Vite + React Router 6 + TanStack Query 5 |
+| **Backend** | Python 3.12 + FastAPI + SQLAlchemy 2.0 (síncrono) + Alembic + pytest |
+| **Frontend** | React 18 + TypeScript + Vite + Tailwind CSS v3 + React Router 6 + TanStack Query 5 + react-hook-form + zod |
 | **Banco de Dados** | SQLite (WAL mode, foreign keys ON) |
 | **Autenticação** | JWT (localStorage, 7 dias, renovação automática) |
 | **Email** | Mailtrap (desenvolvimento/demo) |
@@ -94,15 +94,17 @@ O frontend estará disponível em `http://localhost:5173`.
 │   ├── src/
 │   │   ├── auth/         # Módulo de autenticação (login, JWT, dependências)
 │   │   ├── password_reset/ # Recuperação de senha (tokens opacos, SMTP)
-│   │   ├── models/       # SQLAlchemy models (Usuario, ResetToken)
+│   │   ├── auth/         # Módulo de autenticação (login, JWT, dependências)
+│   │   ├── admin/        # Módulo administrativo (CRUD de 6 entidades)
+│   │   ├── models/       # SQLAlchemy models (Usuario, Aluno, Turma, Disciplina, Professor, Responsável, ProfessorTurma, ResetToken)
 │   │   ├── config.py     # Configurações (pydantic-settings)
 │   │   └── main.py       # Entry point FastAPI
 │   ├── .env.example
 │   └── requirements.txt
 ├── frontend/             # Aplicação React
 │   ├── src/
-│   │   ├── components/   # Componentes reutilizáveis (ProtectedRoute, AppLayout)
-│   │   ├── pages/        # Telas (Login, ForgotPassword, ResetPassword)
+│   │   ├── components/   # Componentes reutilizáveis (ProtectedRoute, AppLayout, AdminLayout, Modal, EntityTable)
+│   │   ├── pages/        # Telas (Login, AdminDashboard, AlunosPage, TurmasPage, DisciplinasPage, ProfessoresPage, ResponsaveisPage)
 │   │   ├── contexts/     # Contextos React (AuthContext)
 │   │   ├── services/     # Clientes HTTP (api.ts com interceptores)
 │   │   └── main.tsx      # Entry point React
@@ -120,13 +122,13 @@ O frontend estará disponível em `http://localhost:5173`.
 | Fase | Status | Descrição |
 |------|--------|-----------|
 | 1. Infraestrutura | ✅ Concluída | Esqueleto backend + frontend + banco + migrations |
-| 2. Autenticação | 🚧 Em andamento (5/6 planos executados, aguardando verificação manual) | Login JWT, rotas protegidas, recuperação de senha |
-| 3. Painel Admin | ⏳ Pendente | CRUD de alunos, turmas, disciplinas, professores |
-| 4. Portal do Professor | ⏳ Pendente | Chamada e notas |
+| 2. Autenticação | ✅ Concluída | Login JWT, rotas protegidas por papel, recuperação de senha, localStorage com renovação automática |
+| 3. Painel Admin | ✅ Concluída | CRUD completo de 6 entidades com modais, validação, paginação e testes |
+| 4. Portal do Professor | 🚧 Em andamento | Chamada e notas por turma/bimestre |
 | 5. Portal do Responsável | ⏳ Pendente | Boletim e frequência |
 | 6. Dashboard e Polish | ⏳ Pendente | Dashboard agregado, alertas LDB, estados de erro/loading |
 
-> **Progresso atual:** 1 fase concluída, 1 em andamento (5/6 planos de autenticação executados)
+> **Progresso atual:** 3/6 fases concluídas (~50%)
 
 ---
 

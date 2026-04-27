@@ -748,22 +748,25 @@ rows = db.execute(stmt).all()
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Matricula uniqueness across years**
    - What we know: `matricula` must display in the table per CONTEXT.md
    - What's unclear: Is `MAT{year}{id:05d}` the right format, or does the school have a pre-existing format?
    - Recommendation: Use `MAT{year}{id:05d}` as default; admin can edit the field if they have an override format. Mark `matricula` as an editable field in the modal.
+   - RESOLVED: Use `MAT{year}{id:05d}` format as default (e.g., MAT202600001). Field is editable in modal so admin can override if school has a different format. Plan 02 service layer generates this on create via `db.flush()` to get the id before commit.
 
 2. **Tailwind CSS not installed**
    - What we know: All existing Phase 2 components use Tailwind classes. Tailwind is not in package.json.
    - What's unclear: Did the agent that wrote those components expect Tailwind to be installed later, or is there a CDN load somewhere?
    - Recommendation: Install `tailwindcss@3` as Wave 0 of Phase 3. This unblocks all UI work.
+   - RESOLVED: Plan 01 Task 3 installs `tailwindcss@3 postcss autoprefixer` via npm, creates `tailwind.config.js` with ESM export default (required by package.json `"type": "module"`), and adds `@tailwind base/components/utilities` to `index.css`.
 
 3. **Alembic env.py batch mode verification**
    - What we know: Phase 1 research recommends batch mode; Phase 1 plan configures it.
    - What's unclear: Did the Phase 1 execution actually write `render_as_batch=True` to env.py?
    - Recommendation: Read `backend/alembic/env.py` at the start of Wave 0 and confirm the flag before running migration 0003.
+   - RESOLVED: Pattern mapper verified `render_as_batch=True` is present in `alembic/env.py` lines 36 and 52. Plan 01 Task 1 reads env.py as a `read_first` prerequisite before running migration 0003 to confirm the flag is active.
 
 ---
 
