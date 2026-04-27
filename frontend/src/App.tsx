@@ -5,7 +5,15 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import AppLayout from './components/AppLayout'
-import AdminDashboard from './pages/dashboards/AdminDashboard'
+import AdminLayout from './components/admin/AdminLayout'
+import AdminDashboard from './pages/admin/AdminDashboard'
+
+// Placeholder pages — replaced by Plan 04
+const AlunosPage = () => <div className="p-8 text-gray-500">Alunos — em breve</div>
+const TurmasPage = () => <div className="p-8 text-gray-500">Turmas — em breve</div>
+const DisciplinasPage = () => <div className="p-8 text-gray-500">Disciplinas — em breve</div>
+const ProfessoresPage = () => <div className="p-8 text-gray-500">Professores — em breve</div>
+const ResponsaveisPage = () => <div className="p-8 text-gray-500">Responsáveis — em breve</div>
 import ProfessorDashboard from './pages/dashboards/ProfessorDashboard'
 import ResponsavelDashboard from './pages/dashboards/ResponsavelDashboard'
 
@@ -45,8 +53,15 @@ const router = createBrowserRouter([
     element: <ProtectedRoute allowedRole="admin" />,
     children: [
       {
-        element: <AppLayout />,
-        children: [{ index: true, element: <AdminDashboard /> }],
+        element: <AdminLayout />,
+        children: [
+          { index: true, element: <AdminDashboard /> },
+          { path: 'alunos', element: <AlunosPage /> },
+          { path: 'turmas', element: <TurmasPage /> },
+          { path: 'disciplinas', element: <DisciplinasPage /> },
+          { path: 'professores', element: <ProfessoresPage /> },
+          { path: 'responsaveis', element: <ResponsaveisPage /> },
+        ],
       },
     ],
   },
