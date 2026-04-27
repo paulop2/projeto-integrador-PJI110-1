@@ -52,9 +52,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- Threshold de aprovação (média >= 5.0 ou 6.0?) não confirmado pela escola — necessário antes da Phase 6
-- Provedor SMTP para recuperação de senha não definido — confirmar se é necessário antes de 24/05/2026
 - Ambiente de deploy para avaliação não especificado — confirmar antes do fim da Phase 5
+
+### Resolved
+
+- Threshold de aprovação: **média >= 5.0** (confirmado 2026-04-26)
+- SMTP para recuperação de senha: **Mailtrap** (desenvolvimento/demo) — usar `mailtrap-python` ou SMTP direto via `fastapi-mail`
 
 ## Session Continuity
 
