@@ -30,13 +30,13 @@ const createSchema = z.object({
   senha: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
   cpf: z.string().nullable().optional(),
   telefone: z.string().nullable().optional(),
-  aluno_ids: z.array(z.number()).default([]),
+  aluno_ids: z.array(z.number()),
 })
 const updateSchema = z.object({
   nome: z.string().min(1, 'Nome é obrigatório'),
   cpf: z.string().nullable().optional(),
   telefone: z.string().nullable().optional(),
-  aluno_ids: z.array(z.number()).default([]),
+  aluno_ids: z.array(z.number()),
 })
 type ResponsavelCreateData = z.infer<typeof createSchema>
 type ResponsavelUpdateData = z.infer<typeof updateSchema>
