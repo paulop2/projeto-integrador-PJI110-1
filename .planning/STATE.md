@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 ## Current Position
 
 Phase: 2 of 6 (Autenticação)
-Plan: 5 of 6 in current phase
-Status: In progress
-Last activity: 2026-04-27 — Completed 02-05 plan (frontend routing)
+Plan: 6 of 6 in current phase
+Status: Checkpoint pending — human verification required
+Last activity: 2026-04-27 — Completed 02-05 (frontend routing), 02-06 Task 1 (smoke tests); awaiting human verification of auth flow
 
-Progress: [██████████████████████░░] 83%
+Progress: [█████████████████████░░░] 88%
 
 ## Performance Metrics
 
@@ -60,7 +60,10 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- [ ] Human verification of Phase 2 auth flow (02-06 Task 2) — scheduled for 2026-04-28
+  - Verification steps saved in `.planning/phases/02-autentica-o/02-06-PLAN.md`
+  - Servers: start backend (`cd backend && uvicorn src.main:app --reload`) and frontend (`cd frontend && npm run dev`)
+  - Open http://localhost:5173 and follow 25 verification steps in plan file
 
 ### Blockers/Concerns
 
@@ -74,5 +77,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-27
-Stopped at: Completed 02-05-PLAN.md (frontend routing)
-Resume file: None
+Stopped at: 02-06-PLAN.md checkpoint — Task 1 (smoke tests) complete, Task 2 (human verification) pending
+Resume file: .planning/phases/02-autentica-o/02-06-PLAN.md
+
+**To resume:** Run `/gsd-execute-phase 02` — discovers 5 completed SUMMARYs, resumes from 02-06 checkpoint.
