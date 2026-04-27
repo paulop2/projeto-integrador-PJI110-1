@@ -11,7 +11,7 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 
 Phase: 4 of 6 (Portal do Professor)
 Plan: 4 of 4 in current phase
-Status: Phase 4 executed — awaiting human verification checkpoint (04-04)
+Status: Phase 4 complete (verification deferred)
 Last activity: 2026-04-27 — all 4 plans complete, automated checks pass
 
 Progress: [████████████████████████████░░] 67%
