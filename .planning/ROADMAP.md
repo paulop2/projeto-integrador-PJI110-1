@@ -48,7 +48,15 @@ Plans:
   3. Acessar uma rota protegida sem token (ou com token expirado) redireciona automaticamente para /login
   4. Token é armazenado em `localStorage` (verificável via DevTools) e persiste entre abas; prazo de 7 dias com renovação automática
   5. Usuário com senha esquecida recebe link de recuperação por e-mail
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Backend foundation: Alembic migration 0002 (reset_tokens), Usuario model, auth module (login endpoint, JWT, get_current_user, require_role)
+- [ ] 02-02-PLAN.md — Backend password reset: forgot-password + reset-password endpoints, smtplib email, single-use opaque tokens
+- [ ] 02-03-PLAN.md — Frontend auth infra: AuthContext with localStorage persistence, api.ts interceptors (Bearer token + 401 redirect + X-New-Token renewal)
+- [ ] 02-04-PLAN.md — Frontend auth pages: LoginPage (split-screen), ForgotPasswordPage, ResetPasswordPage
+- [ ] 02-05-PLAN.md — Frontend routing: ProtectedRoute, AppLayout with logout dropdown, 3 placeholder dashboards, App.tsx rewrite
+- [ ] 02-06-PLAN.md — Verification: smoke tests + human verification of complete auth flow
 
 ### Phase 3: Painel Admin
 **Goal**: Admin consegue cadastrar e gerenciar toda a estrutura da escola — usuários, alunos, turmas, disciplinas e vínculos professor/turma
@@ -104,7 +112,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
-| 2. Autenticação | 0/? | Not started | - |
+| 2. Autenticação | 0/6 | Not started | - |
 | 3. Painel Admin | 0/? | Not started | - |
 | 4. Portal do Professor | 0/? | Not started | - |
 | 5. Portal do Responsável | 0/? | Not started | - |
