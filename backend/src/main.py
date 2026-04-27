@@ -8,6 +8,7 @@ from starlette.requests import Request as StarletteRequest
 from src.config import settings
 from src.auth.router import router as auth_router
 from src.auth.service import maybe_renew_token
+from src.password_reset.router import router as reset_router
 
 
 app = FastAPI(
@@ -44,6 +45,7 @@ class TokenRenewalMiddleware(BaseHTTPMiddleware):
 app.add_middleware(TokenRenewalMiddleware)
 
 app.include_router(auth_router)
+app.include_router(reset_router, prefix="/auth")
 
 
 @app.get("/health")
