@@ -8,6 +8,7 @@ Patterns:
 - Chamada: find-or-create + delete+insert presencas (replace-all)
 - Notas: find-or-create avaliacao per bimestre + upsert nota
 """
+from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from fastapi import HTTPException
@@ -44,24 +45,167 @@ def _assert_professor_owns_turma(db: Session, professor_id: int, turma_id: int) 
 
 
 def get_minhas_turmas(db: Session, current_user: Usuario) -> list:
-    raise NotImplementedError("Wave 2: implement in Plan 02")
+    prof = _get_professor(db, current_user)
+    links = db.query(ProfessorTurma).filter(
+        ProfessorTurma.professor_id == prof.id
+    ).all()
+
+    # Group by turma_id
+    turma_map: dict[int, dict] = {}
+    for link in links:
+        if link.turma_id not in turma_map:
+            turma = db.query(Turma).filter(Turma.id == link.turma_id).first()
+            num_alunos = db.query(Aluno).filter(
+                Aluno.turma_id == link.turma_id,
+                Aluno.ativo == True,
+            ).count()
+            turma_map[link.turma_id] = {
+                "id": link.turma_id,
+                "nome": turma.nome if turma else "",
+                "disciplinas": [],
+                "num_alunos": num_alunos,
+            }
+        disciplina = db.query(Disciplina).filter(Disciplina.id == link.disciplina_id).first()
+        if disciplina:
+            turma_map[link.turma_id]["disciplinas"].append(disciplina.nome)
+
+    return list(turma_map.values())
 
 
 def get_chamada(db: Session, current_user: Usuario, turma_id: int, date_str: str):
-    raise NotImplementedError("Wave 2: implement in Plan 02")
+    prof = _get_professor(db, current_user)
+    _assert_professor_owns_turma(db, prof.id, turma_id)
+    target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    chamada = db.query(Chamada).filter(
+        Chamada.turma_id == turma_id,
+        Chamada.professor_id == prof.id,
+        Chamada.data == target_date,
+    ).first()
+    if not chamada:
+        return {"id": None, "data": date_str, "presencas": []}
+    presencas = db.query(Presenca).filter(Presenca.chamada_id == chamada.id).all()
+    return {
+        "id": chamada.id,
+        "data": str(chamada.data),
+        "presencas": [{"aluno_id": p.aluno_id, "presente": p.presente} for p in presencas],
+    }
 
 
 def upsert_chamada(db: Session, current_user: Usuario, turma_id: int, payload: schemas.ChamadaCreate):
-    raise NotImplementedError("Wave 2: implement in Plan 02")
+    prof = _get_professor(db, current_user)
+    _assert_professor_owns_turma(db, prof.id, turma_id)
+    chamada = db.query(Chamada).filter(
+        Chamada.turma_id == turma_id,
+        Chamada.disciplina_id == payload.disciplina_id,
+        Chamada.professor_id == prof.id,
+        Chamada.data == payload.data,
+    ).first()
+    if not chamada:
+        chamada = Chamada(
+            turma_id=turma_id,
+            disciplina_id=payload.disciplina_id,
+            professor_id=prof.id,
+            data=payload.data,
+        )
+        db.add(chamada)
+        db.flush()
+    # Replace-all presencas
+    db.query(Presenca).filter(Presenca.chamada_id == chamada.id).delete(synchronize_session=False)
+    for p in payload.presencas:
+        db.add(Presenca(chamada_id=chamada.id, aluno_id=p.aluno_id, presente=p.presente))
+    db.commit()
+    return {"id": chamada.id, "data": str(chamada.data)}
 
 
 def get_notas(db: Session, current_user: Usuario, turma_id: int, disciplina_id: int) -> list:
-    raise NotImplementedError("Wave 2: implement in Plan 02")
+    prof = _get_professor(db, current_user)
+    _assert_professor_owns_turma(db, prof.id, turma_id)
+    alunos = db.query(Aluno).filter(Aluno.turma_id == turma_id, Aluno.ativo == True).all()
+    avaliacoes = db.query(Avaliacao).filter(
+        Avaliacao.turma_id == turma_id,
+        Avaliacao.disciplina_id == disciplina_id,
+        Avaliacao.professor_id == prof.id,
+    ).all()
+    result = []
+    for aluno in alunos:
+        notas = []
+        for av in avaliacoes:
+            nota = db.query(Nota).filter(
+                Nota.avaliacao_id == av.id,
+                Nota.aluno_id == aluno.id,
+            ).first()
+            if nota:
+                notas.append({"aluno_id": aluno.id, "bimestre": av.bimestre, "valor": nota.valor})
+        result.append({"aluno_id": aluno.id, "nome": aluno.nome, "notas": notas})
+    return result
 
 
 def upsert_notas(db: Session, current_user: Usuario, turma_id: int, payload: schemas.NotasCreate):
-    raise NotImplementedError("Wave 2: implement in Plan 02")
+    prof = _get_professor(db, current_user)
+    _assert_professor_owns_turma(db, prof.id, turma_id)
+    for grade in payload.grades:
+        avaliacao = db.query(Avaliacao).filter(
+            Avaliacao.turma_id == turma_id,
+            Avaliacao.disciplina_id == payload.disciplina_id,
+            Avaliacao.professor_id == prof.id,
+            Avaliacao.bimestre == grade.bimestre,
+        ).first()
+        if not avaliacao:
+            avaliacao = Avaliacao(
+                turma_id=turma_id,
+                disciplina_id=payload.disciplina_id,
+                professor_id=prof.id,
+                bimestre=grade.bimestre,
+                titulo=f"{grade.bimestre}o Bimestre",
+                valor_maximo=10.0,
+            )
+            db.add(avaliacao)
+            db.flush()
+        # Validate range
+        if not (0 <= grade.valor <= avaliacao.valor_maximo):
+            raise HTTPException(
+                status_code=422,
+                detail=f"Valor {grade.valor} fora do intervalo permitido (0 a {avaliacao.valor_maximo})",
+            )
+        nota = db.query(Nota).filter(
+            Nota.avaliacao_id == avaliacao.id,
+            Nota.aluno_id == grade.aluno_id,
+        ).first()
+        if nota:
+            nota.valor = grade.valor
+        else:
+            db.add(Nota(avaliacao_id=avaliacao.id, aluno_id=grade.aluno_id, valor=grade.valor))
+    db.commit()
+    return {"ok": True}
 
 
 def get_frequencia(db: Session, current_user: Usuario, turma_id: int) -> list:
-    raise NotImplementedError("Wave 2: implement in Plan 02")
+    prof = _get_professor(db, current_user)
+    _assert_professor_owns_turma(db, prof.id, turma_id)
+    chamadas = db.query(Chamada).filter(
+        Chamada.turma_id == turma_id,
+        Chamada.professor_id == prof.id,
+    ).all()
+    total_aulas = len(chamadas)
+    chamada_ids = [c.id for c in chamadas]
+    alunos = db.query(Aluno).filter(Aluno.turma_id == turma_id, Aluno.ativo == True).all()
+    result = []
+    for aluno in alunos:
+        if total_aulas == 0:
+            total_presentes = 0
+            percentual = 0.0
+        else:
+            total_presentes = db.query(Presenca).filter(
+                Presenca.aluno_id == aluno.id,
+                Presenca.chamada_id.in_(chamada_ids),
+                Presenca.presente == True,
+            ).count()
+            percentual = (total_presentes / total_aulas) * 100.0
+        result.append({
+            "aluno_id": aluno.id,
+            "nome": aluno.nome,
+            "total_aulas": total_aulas,
+            "total_presentes": total_presentes,
+            "percentual": percentual,
+        })
+    return result
