@@ -7,13 +7,11 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import AppLayout from './components/AppLayout'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
-
-// Placeholder pages — replaced by Plan 04
-const AlunosPage = () => <div className="p-8 text-gray-500">Alunos — em breve</div>
-const TurmasPage = () => <div className="p-8 text-gray-500">Turmas — em breve</div>
-const DisciplinasPage = () => <div className="p-8 text-gray-500">Disciplinas — em breve</div>
-const ProfessoresPage = () => <div className="p-8 text-gray-500">Professores — em breve</div>
-const ResponsaveisPage = () => <div className="p-8 text-gray-500">Responsáveis — em breve</div>
+import AlunosPage from './pages/admin/AlunosPage'
+import TurmasPage from './pages/admin/TurmasPage'
+import DisciplinasPage from './pages/admin/DisciplinasPage'
+import ProfessoresPage from './pages/admin/ProfessoresPage'
+import ResponsaveisPage from './pages/admin/ResponsaveisPage'
 import ProfessorDashboard from './pages/dashboards/ProfessorDashboard'
 import ResponsavelDashboard from './pages/dashboards/ResponsavelDashboard'
 
