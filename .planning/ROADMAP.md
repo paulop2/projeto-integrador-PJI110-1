@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Infraestrutura** - Esqueleto backend + frontend funcionando com banco, migrations e CORS
 - [x] **Phase 2: Autenticação** - Login JWT com três perfis e rotas protegidas por papel
-- [ ] **Phase 3: Painel Admin** - CRUD completo de alunos, turmas, disciplinas, professores e responsáveis
+- [x] **Phase 3: Painel Admin** - CRUD completo de alunos, turmas, disciplinas, professores e responsáveis
 - [ ] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
 - [ ] **Phase 5: Portal do Responsável** - Boletim e frequência do filho com cálculos automáticos
 - [ ] **Phase 6: Dashboard e Polish** - Dashboard agregado, alertas LDB e estados de erro/loading
@@ -74,7 +74,7 @@ Plans:
 - [x] 03-02-PLAN.md — Backend admin module: ORM models (6 entities), admin schemas + service + router, main.py registration, test suite green
 - [x] 03-03-PLAN.md — Frontend admin layout: AdminLayout + Sidebar, Modal + ConfirmDialog + EntityTable shared components, AdminDashboard, App.tsx routes
 - [x] 03-04-PLAN.md — Frontend CRUD pages: AlunosPage, TurmasPage (professor_turma rows), DisciplinasPage, ProfessoresPage, ResponsaveisPage
-- [ ] 03-05-PLAN.md — Verification: full pytest suite + human verification of all 5 entity CRUD flows
+- [x] 03-05-PLAN.md — Verification: full pytest suite + human verification of all 5 entity CRUD flows
 
 ### Phase 4: Portal do Professor
 **Goal**: Professor registra presença e notas das suas turmas, e apenas das suas turmas
@@ -120,7 +120,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
 | 2. Autenticação | 6/6 | ✓ Complete (verification deferred) | 2026-04-27 |
-| 3. Painel Admin | 4/5 | In progress | 2026-04-27 |
+| 3. Painel Admin | 5/5 | ✓ Complete | 2026-04-27 |
 | 4. Portal do Professor | 0/? | Not started | - |
 | 5. Portal do Responsável | 0/? | Not started | - |
 | 6. Dashboard e Polish | 0/? | Not started | - |
