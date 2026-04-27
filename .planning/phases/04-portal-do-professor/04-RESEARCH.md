@@ -614,17 +614,19 @@ const percentClass = percentual < 75 ? 'text-red-700' : 'text-gray-700'
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Disciplina selector in Notas tab**
    - What we know: A professor can be linked to the same turma for multiple disciplinas (professor_turma composite PK includes disciplina_id). The UI-SPEC says show a disciplina selector if multiple exist.
    - What's unclear: The GET endpoint for notas needs `disciplina_id` — what does the API return when no disciplina is selected? Probably nothing until selection is made.
    - Recommendation: The Notas tab should initialize with the first disciplina in the list automatically (if only one, no selector needed; if multiple, show select).
+   - RESOLVED: Plan 04-03 Task 2 implements this — first disciplina auto-selected, selector shown when professor teaches multiple disciplines in the turma.
 
 2. **Chamada and disciplina_id**
    - What we know: `chamadas` table requires `disciplina_id` — a chamada is per turma+disciplina+date.
    - What's unclear: The Chamada tab in CONTEXT.md doesn't mention choosing a disciplina before taking attendance. If a professor teaches two disciplines in the same turma, there would be two separate chamadas per day.
    - Recommendation: Mirror the Notas tab behavior — show a disciplina selector in the Chamada tab when the professor teaches multiple disciplines in the turma.
+   - RESOLVED: Plan 04-03 Task 2 mirrors the Notas tab pattern — disciplina selector in Chamada tab when multiple disciplinas exist; defaults to first disciplina when only one.
 
 ---
 

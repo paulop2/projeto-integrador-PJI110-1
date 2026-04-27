@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-26)
 
 **Core value:** Pais acompanham o desempenho escolar dos filhos — notas e presença — sem precisar ir até a escola.
-**Current focus:** Phase 4 - Portal do Professor (UI-SPEC approved)
+**Current focus:** Phase 4 - Portal do Professor
 
 ## Current Position
 
-Phase: 3 of 6 (Painel Admin)
-Plan: 5 of 5 in current phase
-Status: Phase 3 complete, ready for Phase 4
-Last activity: 2026-04-27 — 04-UI-SPEC approved
+Phase: 4 of 6 (Portal do Professor)
+Plan: 0 of 4 in current phase
+Status: Phase 4 planned — 4 plans in 3 waves, ready to execute
+Last activity: 2026-04-27 — 04 planning complete (research + patterns + 4 plans verified)
 
 Progress: [██████████████████████████░░] 50%
 
