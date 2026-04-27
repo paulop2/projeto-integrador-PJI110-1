@@ -72,7 +72,7 @@ Plans:
 Plans:
 - [x] 03-01-PLAN.md — Foundations: migration 0003 (matricula), pytest + test stubs, Tailwind v3 install + config, npm packages (sonner/react-hook-form/zod), fix #root width
 - [x] 03-02-PLAN.md — Backend admin module: ORM models (6 entities), admin schemas + service + router, main.py registration, test suite green
-- [ ] 03-03-PLAN.md — Frontend admin layout: AdminLayout + Sidebar, Modal + ConfirmDialog + EntityTable shared components, AdminDashboard, App.tsx routes
+- [x] 03-03-PLAN.md — Frontend admin layout: AdminLayout + Sidebar, Modal + ConfirmDialog + EntityTable shared components, AdminDashboard, App.tsx routes
 - [ ] 03-04-PLAN.md — Frontend CRUD pages: AlunosPage, TurmasPage (professor_turma rows), DisciplinasPage, ProfessoresPage, ResponsaveisPage
 - [ ] 03-05-PLAN.md — Verification: full pytest suite + human verification of all 5 entity CRUD flows
 
@@ -120,7 +120,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
 | 2. Autenticação | 6/6 | ✓ Complete (verification deferred) | 2026-04-27 |
-| 3. Painel Admin | 2/5 | In progress | 2026-04-27 |
+| 3. Painel Admin | 3/5 | In progress | 2026-04-27 |
 | 4. Portal do Professor | 0/? | Not started | - |
 | 5. Portal do Responsável | 0/? | Not started | - |
 | 6. Dashboard e Polish | 0/? | Not started | - |
