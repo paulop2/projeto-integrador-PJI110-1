@@ -13,7 +13,7 @@ O sistema parte do zero e entrega um protótipo funcional até 24/05/2026. A ord
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Infraestrutura** - Esqueleto backend + frontend funcionando com banco, migrations e CORS
-- [ ] **Phase 2: Autenticação** - Login JWT com três perfis e rotas protegidas por papel
+- [x] **Phase 2: Autenticação** - Login JWT com três perfis e rotas protegidas por papel
 - [ ] **Phase 3: Painel Admin** - CRUD completo de alunos, turmas, disciplinas, professores e responsáveis
 - [ ] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
 - [ ] **Phase 5: Portal do Responsável** - Boletim e frequência do filho com cálculos automáticos
@@ -51,12 +51,12 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Backend foundation: Alembic migration 0002 (reset_tokens), Usuario model, auth module (login endpoint, JWT, get_current_user, require_role)
-- [ ] 02-02-PLAN.md — Backend password reset: forgot-password + reset-password endpoints, smtplib email, single-use opaque tokens
-- [ ] 02-03-PLAN.md — Frontend auth infra: AuthContext with localStorage persistence, api.ts interceptors (Bearer token + 401 redirect + X-New-Token renewal)
-- [ ] 02-04-PLAN.md — Frontend auth pages: LoginPage (split-screen), ForgotPasswordPage, ResetPasswordPage
-- [ ] 02-05-PLAN.md — Frontend routing: ProtectedRoute, AppLayout with logout dropdown, 3 placeholder dashboards, App.tsx rewrite
-- [ ] 02-06-PLAN.md — Verification: smoke tests + human verification of complete auth flow
+- [x] 02-01-PLAN.md — Backend foundation: Alembic migration 0002 (reset_tokens), Usuario model, auth module (login endpoint, JWT, get_current_user, require_role)
+- [x] 02-02-PLAN.md — Backend password reset: forgot-password + reset-password endpoints, smtplib email, single-use opaque tokens
+- [x] 02-03-PLAN.md — Frontend auth infra: AuthContext with localStorage persistence, api.ts interceptors (Bearer token + 401 redirect + X-New-Token renewal)
+- [x] 02-04-PLAN.md — Frontend auth pages: LoginPage (split-screen), ForgotPasswordPage, ResetPasswordPage
+- [x] 02-05-PLAN.md — Frontend routing: ProtectedRoute, AppLayout with logout dropdown, 3 placeholder dashboards, App.tsx rewrite
+- [x] 02-06-PLAN.md — Verification: smoke tests + human verification of complete auth flow
 
 ### Phase 3: Painel Admin
 **Goal**: Admin consegue cadastrar e gerenciar toda a estrutura da escola — usuários, alunos, turmas, disciplinas e vínculos professor/turma
@@ -70,7 +70,7 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Foundations: migration 0003 (matricula), pytest + test stubs, Tailwind v3 install + config, npm packages (sonner/react-hook-form/zod), fix #root width
+- [x] 03-01-PLAN.md — Foundations: migration 0003 (matricula), pytest + test stubs, Tailwind v3 install + config, npm packages (sonner/react-hook-form/zod), fix #root width
 - [ ] 03-02-PLAN.md — Backend admin module: ORM models (6 entities), admin schemas + service + router, main.py registration, test suite green
 - [ ] 03-03-PLAN.md — Frontend admin layout: AdminLayout + Sidebar, Modal + ConfirmDialog + EntityTable shared components, AdminDashboard, App.tsx routes
 - [ ] 03-04-PLAN.md — Frontend CRUD pages: AlunosPage, TurmasPage (professor_turma rows), DisciplinasPage, ProfessoresPage, ResponsaveisPage
@@ -119,8 +119,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
-| 2. Autenticação | 0/6 | Not started | - |
-| 3. Painel Admin | 0/5 | Not started | - |
+| 2. Autenticação | 6/6 | ✓ Complete (verification deferred) | 2026-04-27 |
+| 3. Painel Admin | 1/5 | In progress | 2026-04-27 |
 | 4. Portal do Professor | 0/? | Not started | - |
 | 5. Portal do Responsável | 0/? | Not started | - |
 | 6. Dashboard e Polish | 0/? | Not started | - |
