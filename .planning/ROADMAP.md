@@ -12,7 +12,7 @@ O sistema parte do zero e entrega um protótipo funcional até 24/05/2026. A ord
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Infraestrutura** - Esqueleto backend + frontend funcionando com banco, migrations e CORS
+- [x] **Phase 1: Infraestrutura** - Esqueleto backend + frontend funcionando com banco, migrations e CORS
 - [ ] **Phase 2: Autenticação** - Login JWT com três perfis e rotas protegidas por papel
 - [ ] **Phase 3: Painel Admin** - CRUD completo de alunos, turmas, disciplinas, professores e responsáveis
 - [ ] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
@@ -34,9 +34,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Backend skeleton: FastAPI config, database.py com WAL+FK event listener, main.py com CORS, /health endpoint
-- [ ] 01-02-PLAN.md — Alembic schema: env.py com batch mode, migration inicial com 11 tabelas + indexes + seed admin
-- [ ] 01-03-PLAN.md — Frontend scaffold: Vite React-TS, React Router 6, TanStack Query 5, api.ts axios, Makefile
+- [x] 01-01-PLAN.md — Backend skeleton: FastAPI config, database.py com WAL+FK event listener, main.py com CORS, /health endpoint
+- [x] 01-02-PLAN.md — Alembic schema: env.py com batch mode, migration inicial com 11 tabelas + indexes + seed admin
+- [x] 01-03-PLAN.md — Frontend scaffold: Vite React-TS, React Router 6, TanStack Query 5, api.ts axios, Makefile
 
 ### Phase 2: Autenticação
 **Goal**: Qualquer usuário com credenciais válidas consegue entrar no sistema e vê apenas as telas do seu perfil
@@ -103,7 +103,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infraestrutura | 0/3 | Ready to execute | - |
+| 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
 | 2. Autenticação | 0/? | Not started | - |
 | 3. Painel Admin | 0/? | Not started | - |
 | 4. Portal do Professor | 0/? | Not started | - |
