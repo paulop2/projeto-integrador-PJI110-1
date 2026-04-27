@@ -53,6 +53,9 @@ def run_migrations_online() -> None:
         )
         with context.begin_transaction():
             context.run_migrations()
+        # CRÍTICO: commit explícito necessário no SQLAlchemy 2.0 + SQLite
+        # para persistir DML (INSERT, alembic_version) após DDL implícito commit
+        connection.commit()
         # Reabilitar FK enforcement após migration
         connection.execute(text("PRAGMA foreign_keys=ON"))
 
