@@ -67,7 +67,14 @@ Plans:
   2. Admin cria turmas, disciplinas e vincula um professor a uma turma/disciplina (professor_turma)
   3. Admin cria contas de professores e responsáveis; responsável aparece vinculado ao(s) aluno(s) correto(s)
   4. Dados cadastrados pelo admin são imediatamente visíveis nas listas do painel sem refresh manual
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Foundations: migration 0003 (matricula), pytest + test stubs, Tailwind v3 install + config, npm packages (sonner/react-hook-form/zod), fix #root width
+- [ ] 03-02-PLAN.md — Backend admin module: ORM models (6 entities), admin schemas + service + router, main.py registration, test suite green
+- [ ] 03-03-PLAN.md — Frontend admin layout: AdminLayout + Sidebar, Modal + ConfirmDialog + EntityTable shared components, AdminDashboard, App.tsx routes
+- [ ] 03-04-PLAN.md — Frontend CRUD pages: AlunosPage, TurmasPage (professor_turma rows), DisciplinasPage, ProfessoresPage, ResponsaveisPage
+- [ ] 03-05-PLAN.md — Verification: full pytest suite + human verification of all 5 entity CRUD flows
 
 ### Phase 4: Portal do Professor
 **Goal**: Professor registra presença e notas das suas turmas, e apenas das suas turmas
@@ -113,7 +120,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
 | 2. Autenticação | 0/6 | Not started | - |
-| 3. Painel Admin | 0/? | Not started | - |
+| 3. Painel Admin | 0/5 | Not started | - |
 | 4. Portal do Professor | 0/? | Not started | - |
 | 5. Portal do Responsável | 0/? | Not started | - |
 | 6. Dashboard e Polish | 0/? | Not started | - |
