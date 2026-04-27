@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 ## Current Position
 
 Phase: 4 of 6 (Portal do Professor)
-Plan: 1 of 4 in current phase
-Status: Wave 1 executing — Plan 01 complete, proceeding to Wave 2
-Last activity: 2026-04-27 — 04-01 complete (ORM models + professor module scaffold + test stubs)
+Plan: 4 of 4 in current phase
+Status: Phase 4 executed — awaiting human verification checkpoint (04-04)
+Last activity: 2026-04-27 — all 4 plans complete, automated checks pass
 
-Progress: [██████████████████████████░░] 50%
+Progress: [████████████████████████████░░] 67%
 
 ## Performance Metrics
 
@@ -29,17 +29,23 @@ Progress: [███████████████████████
 |-------|-------|-------|----------|
 | 01-infraestrutura | 3 | 3 | 5 min |
 | 02-autentica-o | 4 | 4 | 7 min |
+| 03-painel-admin | 5 | 5 | 15 min |
+| 04-portal-do-professor | 4 | 4 | 15 min |
 
 **Recent Trend:**
 - Last 5 plans: 02-04 (10 min), 02-03 (2 min), 02-01 (10 min), 01-01 (4 min), 01-03 (completed)
 - Trend: stable
 
 *Updated after each plan completion*
+| Phase 04-portal-do-professor P04 | 10min | 2 tasks | 3 files |
+| Phase 04-portal-do-professor P03 | 15min | 2 tasks | 8 files |
+| Phase 04-portal-do-professor P02 | 12min | 2 tasks | 2 files |
+| Phase 04-portal-do-professor P01 | 10min | 2 tasks | 11 files |
 | Phase 03-painel-admin P05 | 10min | 2 tasks | 1 file |
 | Phase 03-painel-admin P04 | 18min | 2 tasks | 6 files |
 | Phase 03-painel-admin P03 | 12min | 2 tasks | 7 files |
 | Phase 03-painel-admin P02 | 20min | 2 tasks | 11 files |
-| Phase 03-painel-admin P01 | 15min | 3 tasks | 11 files |
+| Phase 03-painel-admin P01 | 15min | 2 tasks | 11 files |
 | Phase 02-autentica-o P04 | 10min | 2 tasks | 3 files |
 | Phase 02-autentica-o P03 | 2min | 2 tasks | 2 files |
 | Phase 02-autentica-o P02 | 5min | 2 tasks | 5 files |

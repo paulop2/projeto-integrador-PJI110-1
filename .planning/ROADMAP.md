@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Infraestrutura** - Esqueleto backend + frontend funcionando com banco, migrations e CORS
 - [x] **Phase 2: Autenticação** - Login JWT com três perfis e rotas protegidas por papel
 - [x] **Phase 3: Painel Admin** - CRUD completo de alunos, turmas, disciplinas, professores e responsáveis
-- [ ] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
+- [x] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
 - [ ] **Phase 5: Portal do Responsável** - Boletim e frequência do filho com cálculos automáticos
 - [ ] **Phase 6: Dashboard e Polish** - Dashboard agregado, alertas LDB e estados de erro/loading
 
@@ -90,14 +90,14 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 04-01-PLAN.md — Foundations: 4 ORM models (Chamada/Presenca/Avaliacao/Nota), professor module scaffold (router/service/schemas), test stubs
+- [x] 04-01-PLAN.md — Foundations: 4 ORM models (Chamada/Presenca/Avaliacao/Nota), professor module scaffold (router/service/schemas), test stubs
 
 **Wave 2** *(blocked on Wave 1 completion — 04-02 and 04-03 run in parallel)*
-- [ ] 04-02-PLAN.md — Backend professor API: full service logic (get_minhas_turmas, upsert_chamada, upsert_notas, get_frequencia), all tests green
-- [ ] 04-03-PLAN.md — Frontend professor portal: ProfessorLandingPage, ProfessorTurmaPage (3 tabs), TurmaCard/TabNav/AttendanceToggle/GradeTable/FrequencyTable, App.tsx routes
+- [x] 04-02-PLAN.md — Backend professor API: full service logic (get_minhas_turmas, upsert_chamada, upsert_notas, get_frequencia), all tests green
+- [x] 04-03-PLAN.md — Frontend professor portal: ProfessorLandingPage, ProfessorTurmaPage (3 tabs), TurmaCard/TabNav/AttendanceToggle/GradeTable/FrequencyTable, App.tsx routes
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 04-04-PLAN.md — Verification: full pytest suite + TypeScript build + human browser verification of PROF-01 through PROF-05
+- [x] 04-04-PLAN.md — Verification: full pytest suite + TypeScript build + human browser verification of PROF-01 through PROF-05
 
 Cross-cutting constraints:
 - `_get_professor(db, usuario_id)` helper required in every service function (JWT returns usuario.id, not professor.id)
@@ -137,6 +137,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
 | 2. Autenticação | 6/6 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 3. Painel Admin | 5/5 | ✓ Complete | 2026-04-27 |
-| 4. Portal do Professor | 0/4 | Planned — ready to execute | - |
+| 4. Portal do Professor | 4/4 | ✓ Complete | 2026-04-27 |
 | 5. Portal do Responsável | 0/? | Not started | - |
 | 6. Dashboard e Polish | 0/? | Not started | - |
