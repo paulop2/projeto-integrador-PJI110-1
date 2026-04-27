@@ -1,7 +1,13 @@
+import re
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request as StarletteRequest
 
 from src.config import settings
+from src.auth.router import router as auth_router
+from src.auth.service import maybe_renew_token
 
 
 app = FastAPI(
@@ -18,6 +24,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class TokenRenewalMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: StarletteRequest, call_next):
+        response = await call_next(request)
+        # Only attempt renewal on successful (2xx) responses
+        if 200 <= response.status_code < 300:
+            auth_header = request.headers.get("Authorization", "")
+            match = re.match(r"^Bearer\s+(.+)$", auth_header, re.IGNORECASE)
+            if match:
+                token = match.group(1)
+                new_token = maybe_renew_token(token)
+                if new_token:
+                    response.headers["X-New-Token"] = new_token
+        return response
+
+
+app.add_middleware(TokenRenewalMiddleware)
+
+app.include_router(auth_router)
 
 
 @app.get("/health")
