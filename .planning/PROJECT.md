@@ -12,14 +12,13 @@ Pais acompanham o desempenho escolar dos filhos — notas e presença — sem pr
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Autenticação com três perfis distintos: administrador, docente e pai — Validated in Phase 2: Autenticação
+- [x] Administrador gerencia alunos, turmas e usuários do sistema — Validated in Phase 3: Painel Admin
+- [x] Docente registra chamada (presença/falta) por aula e turma — Validated in Phase 4: Portal do Professor
+- [x] Docente lança notas por aluno e disciplina — Validated in Phase 4: Portal do Professor
 
 ### Active
 
-- [ ] Autenticação com três perfis distintos: administrador, docente e pai
-- [ ] Administrador gerencia alunos, turmas e usuários do sistema
-- [ ] Docente registra chamada (presença/falta) por aula e turma
-- [ ] Docente lança notas por aluno e disciplina
 - [ ] Pai visualiza boletim (notas) e frequência do filho
 - [ ] Dashboard/relatórios de desempenho
 
@@ -51,10 +50,10 @@ Pais acompanham o desempenho escolar dos filhos — notas e presença — sem pr
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| FastAPI + React + SQLite | Definido pela equipe com base nas habilidades técnicas e simplicidade de deploy | — Pending |
-| Autenticação JWT | Padrão para APIs REST, stateless, fácil de integrar com React | — Pending |
-| Separação frontend/backend | Permite trabalho paralelo entre membros da equipe | — Pending |
-| SQLite como banco de dados | Simplicidade para protótipo, sem necessidade de servidor de banco | — Pending |
+| FastAPI + React + SQLite | Definido pela equipe com base nas habilidades técnicas e simplicidade de deploy | Implemented |
+| Autenticação JWT | Padrão para APIs REST, stateless, fácil de integrar com React | Implemented |
+| Separação frontend/backend | Permite trabalho paralelo entre membros da equipe | Working |
+| SQLite como banco de dados | Simplicidade para protótipo, sem necessidade de servidor de banco | Working |
 
 ---
-*Last updated: 2026-04-26 after initialization*
+*Last updated: 2026-04-27 after Phase 4 completion*
