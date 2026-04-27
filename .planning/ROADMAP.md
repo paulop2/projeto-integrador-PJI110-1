@@ -86,7 +86,13 @@ Plans:
   3. Professor lança nota por aluno, disciplina e bimestre (1º ao 4º); nota lançada aparece no histórico
   4. Professor edita chamada ou nota já registrada e a alteração é refletida imediatamente
   5. Professor visualiza resumo de frequência da turma com percentual de presença por aluno
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Foundations: 4 ORM models (Chamada/Presenca/Avaliacao/Nota), professor module scaffold (router/service/schemas), test stubs
+- [ ] 04-02-PLAN.md — Backend professor API: full service logic (get_minhas_turmas, upsert_chamada, upsert_notas, get_frequencia), all tests green
+- [ ] 04-03-PLAN.md — Frontend professor portal: ProfessorLandingPage, ProfessorTurmaPage (3 tabs), TurmaCard/TabNav/AttendanceToggle/GradeTable/FrequencyTable, App.tsx routes
+- [ ] 04-04-PLAN.md — Verification: full pytest suite + TypeScript build + human browser verification of PROF-01 through PROF-05
 
 ### Phase 5: Portal do Responsável
 **Goal**: Responsável visualiza boletim e frequência do filho com cálculos automáticos, sem acesso a dados de outros alunos
@@ -121,6 +127,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
 | 2. Autenticação | 6/6 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 3. Painel Admin | 5/5 | ✓ Complete | 2026-04-27 |
-| 4. Portal do Professor | 0/? | Not started | - |
+| 4. Portal do Professor | 0/4 | In progress | - |
 | 5. Portal do Responsável | 0/? | Not started | - |
 | 6. Dashboard e Polish | 0/? | Not started | - |
