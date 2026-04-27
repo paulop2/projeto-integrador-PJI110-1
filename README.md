@@ -92,18 +92,20 @@ O frontend estará disponível em `http://localhost:5173`.
 ├── backend/              # API FastAPI
 │   ├── alembic/          # Migrations
 │   ├── src/
-│   │   ├── auth/         # Módulo de autenticação
-│   │   ├── models/       # SQLAlchemy models
-│   │   ├── config.py     # Configurações
-│   │   └── main.py       # Entry point
+│   │   ├── auth/         # Módulo de autenticação (login, JWT, dependências)
+│   │   ├── password_reset/ # Recuperação de senha (tokens opacos, SMTP)
+│   │   ├── models/       # SQLAlchemy models (Usuario, ResetToken)
+│   │   ├── config.py     # Configurações (pydantic-settings)
+│   │   └── main.py       # Entry point FastAPI
 │   ├── .env.example
 │   └── requirements.txt
 ├── frontend/             # Aplicação React
 │   ├── src/
-│   │   ├── components/   # Componentes reutilizáveis
-│   │   ├── pages/        # Telas
-│   │   ├── contexts/     # Contextos React (Auth, etc.)
-│   │   └── api.ts        # Cliente HTTP (Axios)
+│   │   ├── components/   # Componentes reutilizáveis (ProtectedRoute, AppLayout)
+│   │   ├── pages/        # Telas (Login, ForgotPassword, ResetPassword)
+│   │   ├── contexts/     # Contextos React (AuthContext)
+│   │   ├── services/     # Clientes HTTP (api.ts com interceptores)
+│   │   └── main.tsx      # Entry point React
 │   └── package.json
 ├── docs/                 # Documentação do projeto
 │   └── relatorio-final.md
@@ -118,13 +120,13 @@ O frontend estará disponível em `http://localhost:5173`.
 | Fase | Status | Descrição |
 |------|--------|-----------|
 | 1. Infraestrutura | ✅ Concluída | Esqueleto backend + frontend + banco + migrations |
-| 2. Autenticação | 🚧 Em andamento | Login JWT, rotas protegidas, recuperação de senha |
+| 2. Autenticação | 🚧 Em andamento (5/6 planos executados, aguardando verificação manual) | Login JWT, rotas protegidas, recuperação de senha |
 | 3. Painel Admin | ⏳ Pendente | CRUD de alunos, turmas, disciplinas, professores |
 | 4. Portal do Professor | ⏳ Pendente | Chamada e notas |
 | 5. Portal do Responsável | ⏳ Pendente | Boletim e frequência |
 | 6. Dashboard e Polish | ⏳ Pendente | Dashboard agregado, alertas LDB, estados de erro/loading |
 
-> **Progresso atual:** 1/6 fases concluídas (33% dos planos)
+> **Progresso atual:** 1 fase concluída, 1 em andamento (5/6 planos de autenticação executados)
 
 ---
 
