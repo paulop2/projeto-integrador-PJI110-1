@@ -313,7 +313,7 @@ def upgrade() -> None:
 
     # -------------------------------------------------------------------------
     # SEED: Usuário admin padrão de desenvolvimento
-    # Hash pré-computado para "admin123" com bcrypt cost=12
+    # Hash pré-computado para "Admin@123" com bcrypt cost=12
     # NÃO computar o hash em runtime — hardcoded é idempotente e não requer passlib
     # -------------------------------------------------------------------------
     op.execute(
@@ -321,7 +321,7 @@ def upgrade() -> None:
         INSERT INTO usuarios (email, senha_hash, tipo, ativo)
         VALUES (
             'admin@escola.dev',
-            '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
+            '$2b$12$1mKwUZ5aHQg.DHcmI0KbcuTVrXlC15/dZ6s4SOmUpj/p82q1jeKEe',
             'admin',
             1
         )
