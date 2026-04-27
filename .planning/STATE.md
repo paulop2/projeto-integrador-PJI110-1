@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-26)
 
 **Core value:** Pais acompanham o desempenho escolar dos filhos — notas e presença — sem precisar ir até a escola.
-**Current focus:** Phase 3 - Painel Admin
+**Current focus:** Phase 4 - Portal do Professor (UI-SPEC approved)
 
 ## Current Position
 
 Phase: 3 of 6 (Painel Admin)
 Plan: 5 of 5 in current phase
 Status: Phase 3 complete, ready for Phase 4
-Last activity: 2026-04-27 — 03-05 completed
+Last activity: 2026-04-27 — 04-UI-SPEC approved
 
 Progress: [██████████████████████████░░] 50%
 
@@ -84,5 +84,10 @@ Recent decisions affecting current work:
 Last session: 2026-04-27
 Stopped at: Phase 3 complete — all 5 plans executed, 11/11 backend tests green, frontend build clean
 Resume file: .planning/phases/03-painel-admin/03-05-PLAN.md
+
+### UI-SPEC Approved
+- Phase 4 UI design contract approved on 2026-04-27
+- 6/6 dimensions passed (Copywriting, Visuals, Color, Typography, Spacing, Registry Safety)
+- File: `.planning/phases/04-portal-do-professor/04-UI-SPEC.md`
 
 **To resume:** Proceed to Phase 4 planning — `/gsd-plan-phase 04` or `/gsd-discuss-phase 04`.
