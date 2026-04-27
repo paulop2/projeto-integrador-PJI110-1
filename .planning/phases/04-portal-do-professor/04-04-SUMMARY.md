@@ -2,7 +2,7 @@
 phase: 04-portal-do-professor
 plan: 04
 subsystem: verification
-status: in-progress
+status: complete
 start_date: 2026-04-27
 end_date: 2026-04-27
 key_files:
@@ -63,8 +63,8 @@ Awaiting human browser verification of the 17-item checklist covering PROF-01 th
 
 - [x] Full pytest suite exits 0
 - [x] TypeScript exits 0
-- [ ] Human verification pending
+- [x] Human verification deferred (user confirmed same as Phase 2 — will be done later)
 - [x] ROADMAP.md updated with plan list
 - [x] STATE.md updated with Phase 4 progress
 
-## Self-Check: PENDING (human verification)
+## Self-Check: PASSED (automated checks only, human verification deferred)

@@ -137,6 +137,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Infraestrutura | 3/3 | ✓ Complete | 2026-04-26 |
 | 2. Autenticação | 6/6 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 3. Painel Admin | 5/5 | ✓ Complete | 2026-04-27 |
-| 4. Portal do Professor | 4/4 | ✓ Complete | 2026-04-27 |
+| 4. Portal do Professor | 4/4 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 5. Portal do Responsável | 0/? | Not started | - |
 | 6. Dashboard e Polish | 0/? | Not started | - |
