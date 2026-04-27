@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-04-26)
 
 **Core value:** Pais acompanham o desempenho escolar dos filhos — notas e presença — sem precisar ir até a escola.
-**Current focus:** Phase 1 - Infraestrutura
+**Current focus:** Phase 2 - Autenticação
 
 ## Current Position
 
-Phase: 1 of 6 (Infraestrutura)
-Plan: 3 of 3 in current phase
-Status: Complete
-Last activity: 2026-04-26 — Completed 01-02 (Alembic Schema)
+Phase: 2 of 6 (Autenticação)
+Plan: 0 of ? in current phase
+Status: Ready to plan
+Last activity: 2026-04-26 — Phase 01 complete, verified 5/5
 
-Progress: [██████████] 100%
+Progress: [██████████░░░░░░░░░░] 16%
 
 ## Performance Metrics
 
