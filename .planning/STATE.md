@@ -43,7 +43,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - Setup: FastAPI + React + SQLite stack fixado; SQLAlchemy sync (não async) para evitar problemas de lock no SQLite
-- Setup: JWT armazenado em sessionStorage (não localStorage) — mitigação XSS mínima para protótipo
+- Setup: JWT armazenado em **localStorage** (decisão Phase 2 discuss: com prazo de 7 dias e renovação automática, sessionStorage era inconveniente sem ganho real de segurança para protótipo)
 - Setup: Business rules (nota <= max, aluno pertence à turma) aplicadas na service layer Python, não em triggers SQLite
 - Alembic: Explicit `connection.commit()` required after `context.run_migrations()` in SQLAlchemy 2.0 + SQLite because DDL implicit commits leave DML uncommitted
 
@@ -63,5 +63,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-26
-Stopped at: Completed 01-02-PLAN.md (Alembic Schema). Phase 01 complete. Ready for Phase 2.
-Resume file: None
+Stopped at: Phase 2 context gathered — auth UX, token storage (localStorage/7d), recovery flow, profile routing.
+Resume file: .planning/phases/02-autentica-o/02-CONTEXT.md
