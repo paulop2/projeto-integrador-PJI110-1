@@ -46,7 +46,7 @@ Plans:
   1. Usuário faz login com email/senha e recebe JWT com claim de perfil (`tipo`)
   2. Admin, professor e responsável são redirecionados para dashboards diferentes após login
   3. Acessar uma rota protegida sem token (ou com token expirado) redireciona automaticamente para /login
-  4. Token é armazenado em `sessionStorage` (verificável via DevTools) e desaparece ao fechar a aba
+  4. Token é armazenado em `localStorage` (verificável via DevTools) e persiste entre abas; prazo de 7 dias com renovação automática
   5. Usuário com senha esquecida recebe link de recuperação por e-mail
 **Plans**: TBD
 
