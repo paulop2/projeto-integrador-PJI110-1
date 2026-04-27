@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 ## Current Position
 
 Phase: 4 of 6 (Portal do Professor)
-Plan: 0 of 4 in current phase
-Status: Phase 4 planned — 4 plans in 3 waves, ready to execute
-Last activity: 2026-04-27 — 04 planning complete (research + patterns + 4 plans verified)
+Plan: 1 of 4 in current phase
+Status: Wave 1 executing — Plan 01 complete, proceeding to Wave 2
+Last activity: 2026-04-27 — 04-01 complete (ORM models + professor module scaffold + test stubs)
 
 Progress: [██████████████████████████░░] 50%
 
