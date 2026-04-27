@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 ## Current Position
 
 Phase: 2 of 6 (Autenticação)
-Plan: 1 of 6 in current phase
+Plan: 3 of 6 in current phase
 Status: In progress
-Last activity: 2026-04-27 — Completed 02-01 plan (backend auth foundation)
+Last activity: 2026-04-27 — Completed 02-03 plan (frontend auth infrastructure)
 
-Progress: [████████████░░░░░░░░] 20%
+Progress: [████████████████░░░░] 50%
 
 ## Performance Metrics
 
@@ -28,13 +28,14 @@ Progress: [████████████░░░░░░░░] 20%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-infraestrutura | 3 | 3 | 5 min |
-| 02-autentica-o | 1 | 1 | 10 min |
+| 02-autentica-o | 3 | 3 | 7 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (10 min), 01-01 (4 min), 01-03 (completed), 01-02 (6 min)
+- Last 5 plans: 02-03 (2 min), 02-01 (10 min), 01-01 (4 min), 01-03 (completed), 01-02 (6 min)
 - Trend: stable
 
 *Updated after each plan completion*
+| Phase 02-autentica-o P03 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -50,6 +51,7 @@ Recent decisions affecting current work:
 - Auth: Downgraded bcrypt from 5.0.0 to 4.0.1 to maintain passlib compatibility (bcrypt 5.0 breaks passlib's CryptContext)
 - Auth: Raw SQL used for display name resolution (Professor/Responsavel ORM models don't exist yet)
 - Auth: Admin seed hash fixed in DB (original migration 0001 hash was for "secret", not "admin123" as commented)
+- [Phase 02-autentica-o]: localStorage chosen over sessionStorage for token persistence — With 7-day JWT expiry and automatic renewal, sessionStorage offered no real security benefit for prototype
 
 ### Pending Todos
 
@@ -67,5 +69,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-27
-Stopped at: Completed 02-01-PLAN.md (backend auth foundation)
+Stopped at: Completed 02-03-PLAN.md (frontend auth infrastructure)
 Resume file: None
