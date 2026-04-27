@@ -31,7 +31,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Migrations Alembic criam o schema completo do zero com `alembic upgrade head` sem erros
   4. Variáveis de ambiente são lidas de `.env` (não commitado); `.env.example` documenta todas as variáveis necessárias
   5. SQLite opera em WAL mode com PRAGMA foreign_keys=ON confirmado por teste manual
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Backend skeleton: FastAPI config, database.py com WAL+FK event listener, main.py com CORS, /health endpoint
+- [ ] 01-02-PLAN.md — Alembic schema: env.py com batch mode, migration inicial com 11 tabelas + indexes + seed admin
+- [ ] 01-03-PLAN.md — Frontend scaffold: Vite React-TS, React Router 6, TanStack Query 5, api.ts axios, Makefile
 
 ### Phase 2: Autenticação
 **Goal**: Qualquer usuário com credenciais válidas consegue entrar no sistema e vê apenas as telas do seu perfil
@@ -98,7 +103,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infraestrutura | 0/? | Not started | - |
+| 1. Infraestrutura | 0/3 | Ready to execute | - |
 | 2. Autenticação | 0/? | Not started | - |
 | 3. Painel Admin | 0/? | Not started | - |
 | 4. Portal do Professor | 0/? | Not started | - |
