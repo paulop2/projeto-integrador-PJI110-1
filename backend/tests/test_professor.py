@@ -28,13 +28,13 @@ def _setup_professor_with_turma(test_db, professor_user):
     test_db.add(prof)
     test_db.flush()
 
-    turma = Turma(nome="7A", ano_letivo=2026)
+    turma = Turma(nome="7A", ano=2026, serie="7", turno="manha")
     test_db.add(turma)
     disciplina = Disciplina(nome="Matematica")
     test_db.add(disciplina)
     test_db.flush()
 
-    aluno = Aluno(nome="Aluno Um", matricula="MAT0001", ativo=True)
+    aluno = Aluno(nome="Aluno Um", matricula="MAT0001", ativo=True, turma_id=turma.id)
     test_db.add(aluno)
     test_db.flush()
 
@@ -70,7 +70,7 @@ def test_ownership_check(client, test_db, professor_user, professor_headers):
     # Create professor profile but do NOT link to any turma
     prof = Professor(usuario_id=professor_user.id, nome="Prof Dono", cpf="00000000002")
     test_db.add(prof)
-    turma = Turma(nome="9B", ano_letivo=2026)
+    turma = Turma(nome="9B", ano=2026, serie="9", turno="manha")
     test_db.add(turma)
     test_db.commit()
 
@@ -118,7 +118,7 @@ def test_get_minhas_turmas_only_own(client, test_db, professor_user, professor_h
     prof, turma, disciplina, aluno = _setup_professor_with_turma(test_db, professor_user)
 
     # Create a second turma NOT linked to this professor
-    other_turma = Turma(nome="OutraTurma", ano_letivo=2026)
+    other_turma = Turma(nome="OutraTurma", ano=2026, serie="9", turno="manha")
     test_db.add(other_turma)
     test_db.commit()
 
