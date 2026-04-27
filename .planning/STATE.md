@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 ## Current Position
 
 Phase: 2 of 6 (Autenticação)
-Plan: 4 of 6 in current phase
+Plan: 5 of 6 in current phase
 Status: In progress
-Last activity: 2026-04-27 — Completed 02-04 plan (auth pages)
+Last activity: 2026-04-27 — Completed 02-05 plan (frontend routing)
 
-Progress: [████████████████████░░░░] 67%
+Progress: [██████████████████████░░] 83%
 
 ## Performance Metrics
 
@@ -38,6 +38,7 @@ Progress: [████████████████████░░░
 | Phase 02-autentica-o P04 | 10min | 2 tasks | 3 files |
 | Phase 02-autentica-o P03 | 2min | 2 tasks | 2 files |
 | Phase 02-autentica-o P02 | 5min | 2 tasks | 5 files |
+| Phase 02-autentica-o P05 | 5min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -55,6 +56,7 @@ Recent decisions affecting current work:
 - Auth: Admin seed hash fixed in DB (original migration 0001 hash was for "secret", not "admin123" as commented)
 - [Phase 02-autentica-o]: localStorage chosen over sessionStorage for token persistence — With 7-day JWT expiry and automatic renewal, sessionStorage offered no real security benefit for prototype
 - [Phase 02-autentica-o]: Used timezone-aware datetime comparison with fallback for naive SQLite datetimes to prevent runtime TypeError during token expiration check — SQLite stores naive datetimes; comparing offset-naive and offset-aware datetimes raises TypeError. Added tzinfo check in validate_and_consume_token to replace naive with UTC timezone before comparison.
+- [Phase 02-autentica-o]: AuthProvider wraps RouterProvider so useAuth() works inside route components
 
 ### Pending Todos
 
@@ -72,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-27
-Stopped at: Completed 02-04-PLAN.md (auth pages)
+Stopped at: Completed 02-05-PLAN.md (frontend routing)
 Resume file: None
