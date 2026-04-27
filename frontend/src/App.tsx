@@ -12,7 +12,8 @@ import TurmasPage from './pages/admin/TurmasPage'
 import DisciplinasPage from './pages/admin/DisciplinasPage'
 import ProfessoresPage from './pages/admin/ProfessoresPage'
 import ResponsaveisPage from './pages/admin/ResponsaveisPage'
-import ProfessorDashboard from './pages/dashboards/ProfessorDashboard'
+import ProfessorLandingPage from './pages/professor/ProfessorLandingPage'
+import ProfessorTurmaPage from './pages/professor/ProfessorTurmaPage'
 import ResponsavelDashboard from './pages/dashboards/ResponsavelDashboard'
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
@@ -69,7 +70,10 @@ const router = createBrowserRouter([
     children: [
       {
         element: <AppLayout />,
-        children: [{ index: true, element: <ProfessorDashboard /> }],
+        children: [
+          { index: true, element: <ProfessorLandingPage /> },
+          { path: 'turmas/:id', element: <ProfessorTurmaPage /> },
+        ],
       },
     ],
   },
