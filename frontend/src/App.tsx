@@ -1,52 +1,89 @@
-import { useEffect, useState } from 'react'
-import { createBrowserRouter, RouterProvider, Link, Outlet } from 'react-router-dom'
-import { api } from './services/api'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
+import LoginPage from './pages/LoginPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import AppLayout from './components/AppLayout'
+import AdminDashboard from './pages/dashboards/AdminDashboard'
+import ProfessorDashboard from './pages/dashboards/ProfessorDashboard'
+import ResponsavelDashboard from './pages/dashboards/ResponsavelDashboard'
 
-// Layout raiz — será expandido nas fases seguintes
-function Root() {
-  return (
-    <div>
-      <nav>
-        <Link to="/">Início</Link>
-      </nav>
-      <Outlet />
-    </div>
-  )
+function PublicRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, user } = useAuth()
+  if (isAuthenticated && user) {
+    return <Navigate to={`/${user.tipo}`} replace />
+  }
+  return <>{children}</>
 }
 
-// Página inicial com verificação de CORS
-function HomePage() {
-  const [backendStatus, setBackendStatus] = useState<string>('verificando...')
-
-  useEffect(() => {
-    api
-      .get('/health')
-      .then((res) => setBackendStatus(JSON.stringify(res.data)))
-      .catch((err) => setBackendStatus(`Erro: ${err.message}`))
-  }, [])
-
-  return (
-    <div>
-      <h1>Sistema Escolar</h1>
-      <p>Backend: {backendStatus}</p>
-    </div>
-  )
+function RootRedirect() {
+  const { isAuthenticated, user } = useAuth()
+  if (isAuthenticated && user) return <Navigate to={`/${user.tipo}`} replace />
+  return <Navigate to="/login" replace />
 }
 
-// Usar createBrowserRouter (data API) — NÃO usar BrowserRouter legado
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Root />,
+    path: '/login',
+    element: (
+      <PublicRoute>
+        <LoginPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: '/esqueci-senha',
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: '/redefinir-senha',
+    element: <ResetPasswordPage />,
+  },
+  {
+    path: '/admin',
+    element: <ProtectedRoute allowedRole="admin" />,
     children: [
       {
-        index: true,
-        element: <HomePage />,
+        element: <AppLayout />,
+        children: [{ index: true, element: <AdminDashboard /> }],
       },
     ],
+  },
+  {
+    path: '/professor',
+    element: <ProtectedRoute allowedRole="professor" />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [{ index: true, element: <ProfessorDashboard /> }],
+      },
+    ],
+  },
+  {
+    path: '/responsavel',
+    element: <ProtectedRoute allowedRole="responsavel" />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [{ index: true, element: <ResponsavelDashboard /> }],
+      },
+    ],
+  },
+  {
+    path: '/',
+    element: <RootRedirect />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/login" replace />,
   },
 ])
 
 export default function App() {
-  return <RouterProvider router={router} />
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  )
 }
