@@ -14,7 +14,7 @@ import ProfessoresPage from './pages/admin/ProfessoresPage'
 import ResponsaveisPage from './pages/admin/ResponsaveisPage'
 import ProfessorLandingPage from './pages/professor/ProfessorLandingPage'
 import ProfessorTurmaPage from './pages/professor/ProfessorTurmaPage'
-import ResponsavelDashboard from './pages/dashboards/ResponsavelDashboard'
+import ResponsavelBoletimPage from './pages/responsavel/ResponsavelBoletimPage'
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user } = useAuth()
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
     children: [
       {
         element: <AppLayout />,
-        children: [{ index: true, element: <ResponsavelDashboard /> }],
+        children: [{ index: true, element: <ResponsavelBoletimPage /> }],
       },
     ],
   },
