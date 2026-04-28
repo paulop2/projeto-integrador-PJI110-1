@@ -9,6 +9,8 @@ interface Turma {
   nome: string
   disciplinas: string[]
   num_alunos: number
+  media_geral?: number | null
+  pct_aprovados?: number | null
 }
 
 function useMinhasTurmas() {
