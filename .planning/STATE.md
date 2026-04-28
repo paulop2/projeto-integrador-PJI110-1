@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 
 ## Current Position
 
-Phase: 5 of 6 (Portal do Responsável)
-Plan: 2 of 3 in current phase
-Status: In progress — Waves 1-2 complete, Wave 3 executing
-Last activity: 2026-04-27 — 05-02 frontend portal + TypeScript clean
+Phase: 6 of 6 (Dashboard e Polish)
+Plan: 0 of ? in current phase
+Status: Not started — awaiting planning
+Last activity: 2026-04-27 — Phase 5 complete (3/3 plans, 37 tests green, human UAT deferred)
 
 Progress: [████████████████████████████░░] 67%
 
@@ -33,8 +33,12 @@ Progress: [███████████████████████
 | 04-portal-do-professor | 4 | 4 | 15 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-04 (10 min), 02-03 (2 min), 02-01 (10 min), 01-01 (4 min), 01-03 (completed)
+- Last 5 plans: 05-03 (5 min), 05-02 (12 min), 05-01 (15 min), 04-04 (verification), 04-03 (frontend)
 - Trend: stable
+
+| Phase 05-portal-do-responsavel P03 | 5min | 2 tasks | 1 file |
+| Phase 05-portal-do-responsavel P02 | 12min | 2 tasks | 7 files |
+| Phase 05-portal-do-responsavel P01 | 15min | 2 tasks | 7 files |
 
 *Updated after each plan completion*
 | Phase 04-portal-do-professor P04 | 10min | 2 tasks | 3 files |
@@ -88,8 +92,8 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-04-27
-Stopped at: Phase 3 complete — all 5 plans executed, 11/11 backend tests green, frontend build clean
-Resume file: .planning/phases/03-painel-admin/03-05-PLAN.md
+Stopped at: Phase 5 complete — all 3 plans executed, 37/37 backend tests green, frontend build clean, human UAT deferred
+Resume file: None
 
 ### UI-SPEC Approved
 - Phase 4 UI design contract approved on 2026-04-27
