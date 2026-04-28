@@ -4,13 +4,11 @@ Revision ID: 0001
 Revises:
 Create Date: 2026-04-26 00:00:00.000000
 
-Schema completo do sistema escolar — todas as 11 tabelas + indexes + seed admin.
-Este schema é definitivo: fases 2-6 não adicionam migrations.
+Schema completo do sistema escolar — 12 tabelas + indexes + seed admin.
 """
 
 from alembic import op
 import sqlalchemy as sa
-from datetime import date
 
 revision = "0001"
 down_revision = None
@@ -45,7 +43,35 @@ def upgrade() -> None:
     op.create_index("ix_usuarios_email", "usuarios", ["email"], unique=True)
 
     # -------------------------------------------------------------------------
-    # 2. PROFESSORES — perfil de professor (1:1 com usuarios)
+    # 2. RESET_TOKENS — tokens de redefinição de senha (24h TTL, single-use)
+    # -------------------------------------------------------------------------
+    op.create_table(
+        "reset_tokens",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("usuario_id", sa.Integer(), nullable=False),
+        sa.Column("token", sa.String(length=128), nullable=False),
+        sa.Column("expira_em", sa.DateTime(), nullable=False),
+        sa.Column("usado", sa.Boolean(), nullable=False, server_default="0"),
+        sa.Column(
+            "criado_em",
+            sa.DateTime(),
+            nullable=False,
+            server_default=sa.func.current_timestamp(),
+        ),
+        sa.PrimaryKeyConstraint("id", name="pk_reset_tokens"),
+        sa.UniqueConstraint("token", name="uq_reset_tokens_token"),
+        sa.ForeignKeyConstraint(
+            ["usuario_id"],
+            ["usuarios.id"],
+            name="fk_reset_tokens_usuario_id_usuarios",
+            ondelete="CASCADE",
+        ),
+    )
+    op.create_index("ix_reset_tokens_usuario_id", "reset_tokens", ["usuario_id"])
+    op.create_index("ix_reset_tokens_token", "reset_tokens", ["token"], unique=True)
+
+    # -------------------------------------------------------------------------
+    # 3. PROFESSORES — perfil de professor (1:1 com usuarios)
     # -------------------------------------------------------------------------
     op.create_table(
         "professores",
@@ -64,7 +90,7 @@ def upgrade() -> None:
     )
 
     # -------------------------------------------------------------------------
-    # 3. RESPONSAVEIS — perfil de responsável (1:1 com usuarios)
+    # 4. RESPONSAVEIS — perfil de responsável (1:1 com usuarios)
     # -------------------------------------------------------------------------
     op.create_table(
         "responsaveis",
@@ -84,7 +110,7 @@ def upgrade() -> None:
     )
 
     # -------------------------------------------------------------------------
-    # 4. TURMAS — turmas/classes da escola
+    # 5. TURMAS — turmas/classes da escola
     # -------------------------------------------------------------------------
     op.create_table(
         "turmas",
@@ -92,27 +118,28 @@ def upgrade() -> None:
         sa.Column("nome", sa.String(length=100), nullable=False),
         sa.Column("ano", sa.Integer(), nullable=False),
         sa.Column("serie", sa.String(length=50), nullable=False),
-        sa.Column("turno", sa.String(length=20), nullable=False),  # manhã/tarde/noite
+        sa.Column("turno", sa.String(length=20), nullable=False),
         sa.PrimaryKeyConstraint("id", name="pk_turmas"),
     )
 
     # -------------------------------------------------------------------------
-    # 5. DISCIPLINAS — matérias/subjects
+    # 6. DISCIPLINAS — matérias/subjects
     # -------------------------------------------------------------------------
     op.create_table(
         "disciplinas",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("nome", sa.String(length=100), nullable=False),
-        sa.Column("carga_horaria", sa.Integer(), nullable=True),  # horas/ano
+        sa.Column("carga_horaria", sa.Integer(), nullable=True),
         sa.PrimaryKeyConstraint("id", name="pk_disciplinas"),
     )
 
     # -------------------------------------------------------------------------
-    # 6. ALUNOS — alunos (depende de responsaveis e turmas)
+    # 7. ALUNOS — alunos (depende de responsaveis e turmas)
     # -------------------------------------------------------------------------
     op.create_table(
         "alunos",
         sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("matricula", sa.String(length=20), nullable=True),
         sa.Column("nome", sa.String(length=255), nullable=False),
         sa.Column("data_nascimento", sa.Date(), nullable=True),
         sa.Column("responsavel_id", sa.Integer(), nullable=True),
@@ -130,13 +157,14 @@ def upgrade() -> None:
             name="fk_alunos_turma_id_turmas",
             ondelete="SET NULL",
         ),
+        sa.UniqueConstraint("matricula", name="uq_alunos_matricula"),
         sa.PrimaryKeyConstraint("id", name="pk_alunos"),
     )
     op.create_index("ix_alunos_responsavel_id", "alunos", ["responsavel_id"])
     op.create_index("ix_alunos_turma_id", "alunos", ["turma_id"])
 
     # -------------------------------------------------------------------------
-    # 7. PROFESSOR_TURMA — junction: quem leciona o quê (professor x turma x disciplina)
+    # 8. PROFESSOR_TURMA — junction: quem leciona o quê (professor x turma x disciplina)
     # -------------------------------------------------------------------------
     op.create_table(
         "professor_turma",
@@ -170,7 +198,7 @@ def upgrade() -> None:
     )
 
     # -------------------------------------------------------------------------
-    # 8. CHAMADAS — sessão de chamada (uma chamada por turma/disciplina/data)
+    # 9. CHAMADAS — sessão de chamada (uma chamada por turma/disciplina/data)
     # -------------------------------------------------------------------------
     op.create_table(
         "chamadas",
@@ -209,7 +237,7 @@ def upgrade() -> None:
     op.create_index("ix_chamadas_data", "chamadas", ["data"])
 
     # -------------------------------------------------------------------------
-    # 9. PRESENCAS — registro de presença por aluno em uma chamada
+    # 10. PRESENCAS — registro de presença por aluno em uma chamada
     # -------------------------------------------------------------------------
     op.create_table(
         "presencas",
@@ -239,7 +267,7 @@ def upgrade() -> None:
     op.create_index("ix_presencas_aluno_id", "presencas", ["aluno_id"])
 
     # -------------------------------------------------------------------------
-    # 10. AVALIACOES — definição de uma avaliação (prova/trabalho) por bimestre
+    # 11. AVALIACOES — definição de uma avaliação (prova/trabalho) por bimestre
     # -------------------------------------------------------------------------
     op.create_table(
         "avaliacoes",
@@ -248,7 +276,7 @@ def upgrade() -> None:
         sa.Column("disciplina_id", sa.Integer(), nullable=False),
         sa.Column("professor_id", sa.Integer(), nullable=False),
         sa.Column("titulo", sa.String(length=255), nullable=False),
-        sa.Column("bimestre", sa.Integer(), nullable=False),  # 1, 2, 3 ou 4
+        sa.Column("bimestre", sa.Integer(), nullable=False),
         sa.Column("valor_maximo", sa.Float(), nullable=False, server_default="10.0"),
         sa.Column("data", sa.Date(), nullable=True),
         sa.ForeignKeyConstraint(
@@ -277,7 +305,7 @@ def upgrade() -> None:
     op.create_index("ix_avaliacoes_bimestre", "avaliacoes", ["bimestre"])
 
     # -------------------------------------------------------------------------
-    # 11. NOTAS — nota de um aluno em uma avaliação
+    # 12. NOTAS — nota de um aluno em uma avaliação
     # -------------------------------------------------------------------------
     op.create_table(
         "notas",
@@ -314,7 +342,6 @@ def upgrade() -> None:
     # -------------------------------------------------------------------------
     # SEED: Usuário admin padrão de desenvolvimento
     # Hash pré-computado para "Admin@123" com bcrypt cost=12
-    # NÃO computar o hash em runtime — hardcoded é idempotente e não requer passlib
     # -------------------------------------------------------------------------
     op.execute(
         """
@@ -330,7 +357,6 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    # Remover na ordem inversa de dependência
     op.drop_table("notas")
     op.drop_table("avaliacoes")
     op.drop_table("presencas")
@@ -341,4 +367,5 @@ def downgrade() -> None:
     op.drop_table("turmas")
     op.drop_table("responsaveis")
     op.drop_table("professores")
+    op.drop_table("reset_tokens")
     op.drop_table("usuarios")
