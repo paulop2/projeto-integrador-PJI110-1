@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Painel Admin** - CRUD completo de alunos, turmas, disciplinas, professores e responsáveis
 - [x] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
 - [x] **Phase 5: Portal do Responsável** - Boletim e frequência do filho com cálculos automáticos
-- [ ] **Phase 6: Dashboard e Polish** - Dashboard agregado, alertas LDB e estados de erro/loading
+- [x] **Phase 6: Dashboard e Polish** - Dashboard agregado, alertas LDB e estados de erro/loading
 - [ ] **Phase 7: Deploy** - Sistema está rodando em produção no Render com deploy automático via GitHub Actions
 
 ## Phase Details
@@ -179,5 +179,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Painel Admin | 5/5 | ✓ Complete | 2026-04-27 |
 | 4. Portal do Professor | 4/4 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 5. Portal do Responsável | 3/3 | ✓ Complete (verification deferred) | 2026-04-27 |
-| 6. Dashboard e Polish | 0/? | Not started | - |
+| 6. Dashboard e Polish | 4/4 | ✓ Complete (verification deferred) | 2026-04-28 |
 | 7. Deploy | 0/? | Not started | - |
