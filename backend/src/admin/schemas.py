@@ -194,3 +194,17 @@ class DashboardCounts(BaseModel):
     disciplinas: int
     professores: int
     responsaveis: int
+
+
+class TurmaDesempenhoOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    turma_id: int
+    turma_nome: str
+    num_alunos: int
+    media_geral: Optional[float] = None
+    pct_aprovados: Optional[float] = None
+
+
+class DashboardDesempenho(BaseModel):
+    turmas: List[TurmaDesempenhoOut]
+    alunos_em_risco: int
