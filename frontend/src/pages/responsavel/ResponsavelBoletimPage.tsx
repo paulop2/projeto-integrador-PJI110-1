@@ -5,6 +5,8 @@ import { ChildSelector } from '../../components/responsavel/ChildSelector'
 import { SummaryCard } from '../../components/responsavel/SummaryCard'
 import { BoletimTable } from '../../components/responsavel/BoletimTable'
 import { EmptyState } from '../../components/responsavel/EmptyState'
+import { SkeletonCard } from '../../components/SkeletonCard'
+import { SkeletonTable } from '../../components/SkeletonTable'
 
 interface FilhoOut {
   id: number
@@ -61,9 +63,7 @@ export default function ResponsavelBoletimPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {filhosLoading ? (
-          <div aria-live="polite" className="text-center py-12 text-gray-400 text-sm">
-            Carregando boletim...
-          </div>
+          <SkeletonCard rows={2} />
         ) : !filhos || filhos.length === 0 ? (
           <EmptyState variant="no-children" />
         ) : (
@@ -81,9 +81,7 @@ export default function ResponsavelBoletimPage() {
 
             {/* Summary card and boletim table */}
             {boletimLoading ? (
-              <div aria-live="polite" className="text-center py-12 text-gray-400 text-sm">
-                Carregando boletim...
-              </div>
+              <SkeletonTable rows={4} columns={5} />
             ) : !boletim || boletim.length === 0 ? (
               <EmptyState variant="no-data" />
             ) : (
