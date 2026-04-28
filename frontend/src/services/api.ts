@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'sonner'
 import { authContextRef } from '../contexts/AuthContext'
 
 export const api = axios.create({
@@ -46,6 +47,10 @@ api.interceptors.response.use(
         // Redirect outside React tree — window.location is correct here
         window.location.href = '/login'
       }
+    }
+    if (error.response?.status !== 401) {
+      const msg = error.response?.data?.detail || 'Erro no servidor. Tente novamente em instantes.'
+      toast.error(msg)
     }
     return Promise.reject(error)
   },
