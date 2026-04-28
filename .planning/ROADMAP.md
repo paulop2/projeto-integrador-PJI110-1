@@ -115,7 +115,24 @@ Cross-cutting constraints:
   4. Sistema exibe alerta visual destacado quando frequência está abaixo de 75% (regra LDB)
   5. Responsável logado com filho A não consegue acessar dados do filho B de outro responsável (nem por URL direta)
   6. Sistema exibe status de aprovação/reprovação com base na média calculada
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+- [ ] 05-01-PLAN.md — Backend module + test scaffold: responsavel/ package (schemas, router, service), conftest fixtures (responsavel_user + responsavel_headers), test_responsavel.py (RESP-01 through RESP-06 + access control), main.py registration
+
+**Wave 2** *(blocked on Wave 1 — 05-02 runs after 05-01)*
+- [ ] 05-02-PLAN.md — Frontend responsavel portal: ResponsavelBoletimPage, 5 components (ChildSelector, SummaryCard, BoletimTable, StatusBadge, EmptyState), App.tsx import swap
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 05-03-PLAN.md — Verification: full pytest suite + TypeScript build + human browser verification of RESP-01 through RESP-06
+
+Cross-cutting constraints:
+- `_get_responsavel(db, usuario)` helper required in every service function
+- No new Alembic migrations — all 11 tables exist from migration 0001
+- Ownership check (`_assert_responsavel_owns_aluno`) must return 403 (NOT 404) — IDOR prevention
+- Frequência query must NOT filter by professor_id — count ALL chamadas for (turma_id, disciplina_id)
+- Approval rule server-enforced: media >= 5.0 AND freq_pct >= 75.0 (both required; LDB art. 24, VI)
 
 ### Phase 6: Dashboard e Polish
 **Goal**: Admin e professor têm dashboard com visão agregada de desempenho; sistema está estável para demonstração
@@ -138,5 +155,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Autenticação | 6/6 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 3. Painel Admin | 5/5 | ✓ Complete | 2026-04-27 |
 | 4. Portal do Professor | 4/4 | ✓ Complete (verification deferred) | 2026-04-27 |
-| 5. Portal do Responsável | 0/? | Not started | - |
+| 5. Portal do Responsável | 0/3 | In progress | - |
 | 6. Dashboard e Polish | 0/? | Not started | - |
