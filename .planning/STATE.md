@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-26)
 
 **Core value:** Pais acompanham o desempenho escolar dos filhos — notas e presença — sem precisar ir até a escola.
-**Current focus:** Phase 4 - Portal do Professor
+**Current focus:** Phase 5 - Portal do Responsável
 
 ## Current Position
 
-Phase: 4 of 6 (Portal do Professor)
-Plan: 4 of 4 in current phase
-Status: Phase 4 complete (verification deferred)
-Last activity: 2026-04-27 — all 4 plans complete, automated checks pass
+Phase: 5 of 6 (Portal do Responsável)
+Plan: 0 of 3 in current phase
+Status: Ready to execute (3 plans, 3 waves)
+Last activity: 2026-04-27 — Phase 5 planned: research + pattern mapping + planner + checker all complete
 
 Progress: [████████████████████████████░░] 67%
 

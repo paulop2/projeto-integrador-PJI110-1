@@ -636,7 +636,7 @@ Step 2.6: SKIPPED — Phase 5 is purely code changes (new backend module + front
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **What if a responsavel has zero alunos linked?**
    - What we know: `alunos.responsavel_id` is nullable; admin may create a responsavel account before linking alunos
