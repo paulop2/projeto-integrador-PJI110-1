@@ -16,6 +16,8 @@ class TurmaOut(BaseModel):
     nome: str
     disciplinas: List[str] = []
     num_alunos: int = 0
+    media_geral: Optional[float] = None
+    pct_aprovados: Optional[float] = None
 
 
 # --- Chamada schemas ---
