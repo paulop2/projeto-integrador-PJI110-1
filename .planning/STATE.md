@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-26)
 
 **Core value:** Pais acompanham o desempenho escolar dos filhos — notas e presença — sem precisar ir até a escola.
-**Current focus:** Phase 5 - Portal do Responsável
+**Current focus:** Phase 7 - Deploy
 
 ## Current Position
 
-Phase: 6 of 6 (Dashboard e Polish)
-Plan: 0 of ? in current phase
-Status: Not started — awaiting planning
-Last activity: 2026-04-27 — Phase 5 complete (3/3 plans, 37 tests green, human UAT deferred)
+Phase: 6 of 7 (Dashboard e Polish)
+Plan: 4 of 4 in current phase
+Status: Complete (verification deferred)
+Last activity: 2026-04-28 — All 4 plans executed, 39 tests green, human UAT deferred
 
 Progress: [████████████████████████████░░] 67%
 
