@@ -1,3 +1,5 @@
+import { SkeletonTable } from '../SkeletonTable'
+
 interface Column {
   key: string
   label: string
@@ -57,7 +59,7 @@ export function EntityTable({
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12 text-gray-400 text-sm">Carregando...</div>
+        <SkeletonTable rows={5} columns={columns.length + 1} />
       ) : rows.length === 0 ? (
         <div className="text-center py-12 text-gray-400 text-sm">Nenhum registro encontrado.</div>
       ) : (

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../services/api'
 import { TurmaCard } from '../../components/professor/TurmaCard'
+import { SkeletonCard } from '../../components/SkeletonCard'
 
 interface Turma {
   id: number
@@ -29,7 +30,11 @@ export default function ProfessorLandingPage() {
       </p>
 
       {isLoading ? (
-        <div className="text-center py-12 text-gray-400 text-sm">Carregando turmas...</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          {[1, 2, 3].map((i) => (
+            <SkeletonCard key={i} rows={3} />
+          ))}
+        </div>
       ) : !turmas || turmas.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-xl font-medium text-gray-900">Nenhuma turma vinculada</p>
