@@ -18,6 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
 - [x] **Phase 5: Portal do Responsável** - Boletim e frequência do filho com cálculos automáticos
 - [ ] **Phase 6: Dashboard e Polish** - Dashboard agregado, alertas LDB e estados de erro/loading
+- [ ] **Phase 7: Deploy** - Sistema está rodando em produção no Render com deploy automático via GitHub Actions
 
 ## Phase Details
 
@@ -142,6 +143,28 @@ Cross-cutting constraints:
   1. Admin e professor veem dashboard com médias e frequência agregadas por turma
   2. Erros de API exibem mensagem amigável em português (não stack trace ou tela em branco)
   3. Requisições lentas exibem estado de loading (spinner ou skeleton) sem travar a interface
+**Plans**: 4 plans
+
+Plans:
+**Wave 1** *(01 and 02 run in parallel)*
+- [ ] 06-01-PLAN.md — Backend dashboard APIs: /admin/dashboard/desempenho + enriched /professor/minhas-turmas with LDB metrics
+- [ ] 06-02-PLAN.md — Skeleton components + global error handling: reusable SkeletonCard/Row/Table, toast.error() in api.ts interceptor, replace all loading text
+
+**Wave 2** *(blocked on Wave 1)*
+- [ ] 06-03-PLAN.md — Frontend dashboard polish: AdminDashboard alert card + performance table, TurmaCard with metrics
+
+**Wave 3** *(blocked on Wave 2)*
+- [ ] 06-04-PLAN.md — Verification: full pytest suite + TypeScript build + human browser verification
+
+### Phase 7: Deploy
+**Goal**: Sistema está rodando em produção no Render com deploy automático via GitHub Actions
+**Depends on**: Phase 6
+**Requirements**: DEPLOY-01
+**Success Criteria** (what must be TRUE):
+  1. Backend FastAPI acessível em URL pública no Render
+  2. Frontend React acessível em URL pública (Render static site ou Cloudflare Pages)
+  3. Push para `master` dispara deploy automático via GitHub Actions
+  4. Variáveis de ambiente (JWT secret, DATABASE_URL) configuradas via Render dashboard, não commitadas
 **Plans**: TBD
 
 ## Progress
@@ -157,3 +180,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Portal do Professor | 4/4 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 5. Portal do Responsável | 3/3 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 6. Dashboard e Polish | 0/? | Not started | - |
+| 7. Deploy | 0/? | Not started | - |
