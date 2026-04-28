@@ -21,6 +21,10 @@ from src.models.disciplina import Disciplina
 from src.models.professor import Professor
 from src.models.responsavel import Responsavel
 from src.models.professor_turma import ProfessorTurma
+from src.models.avaliacao import Avaliacao
+from src.models.nota import Nota
+from src.models.chamada import Chamada
+from src.models.presenca import Presenca
 from src.auth.service import hash_password
 from . import schemas
 
@@ -41,6 +45,102 @@ def get_dashboard_counts(db: Session) -> dict:
         "disciplinas": disciplinas,
         "professores": professores,
         "responsaveis": responsaveis,
+    }
+
+
+def _calcular_media_freq_aprovado(db: Session, aluno_id: int, turma_id: int, disciplina_id: int) -> tuple:
+    """Returns (media, freq_pct, aprovado) for a given (aluno, turma, disciplina)."""
+    avaliacoes = db.query(Avaliacao).filter(
+        Avaliacao.turma_id == turma_id,
+        Avaliacao.disciplina_id == disciplina_id,
+    ).all()
+    notas = []
+    for av in avaliacoes:
+        nota = db.query(Nota).filter(
+            Nota.avaliacao_id == av.id,
+            Nota.aluno_id == aluno_id,
+        ).first()
+        if nota:
+            notas.append(nota.valor)
+    media = sum(notas) / len(notas) if notas else None
+
+    chamadas = db.query(Chamada).filter(
+        Chamada.turma_id == turma_id,
+        Chamada.disciplina_id == disciplina_id,
+    ).all()
+    total_chamadas = len(chamadas)
+    if total_chamadas == 0:
+        freq_pct = None
+    else:
+        chamada_ids = [c.id for c in chamadas]
+        presentes = db.query(Presenca).filter(
+            Presenca.aluno_id == aluno_id,
+            Presenca.chamada_id.in_(chamada_ids),
+            Presenca.presente == True,
+        ).count()
+        freq_pct = (presentes / total_chamadas) * 100.0
+
+    aprovado = (
+        media is not None and media >= 5.0
+        and freq_pct is not None and freq_pct >= 75.0
+    )
+    return media, freq_pct, aprovado
+
+
+def get_dashboard_desempenho(db: Session) -> dict:
+    turmas = db.query(Turma).all()
+    alunos_em_risco = 0
+
+    turma_results = []
+    for turma in turmas:
+        alunos = db.query(Aluno).filter(
+            Aluno.turma_id == turma.id,
+            Aluno.ativo == True,
+        ).all()
+        num_alunos = len(alunos)
+
+        disciplina_ids = (
+            db.query(ProfessorTurma.disciplina_id)
+            .filter(ProfessorTurma.turma_id == turma.id)
+            .distinct()
+            .all()
+        )
+        disciplina_ids = [row[0] for row in disciplina_ids]
+
+        aprovados_count = 0
+        all_medias = []
+
+        for aluno in alunos:
+            aprovado_em_todas = True
+            if not disciplina_ids:
+                aprovado_em_todas = False
+            for disc_id in disciplina_ids:
+                media, freq_pct, aprovado = _calcular_media_freq_aprovado(
+                    db, aluno.id, turma.id, disc_id
+                )
+                if media is not None:
+                    all_medias.append(media)
+                if not aprovado:
+                    aprovado_em_todas = False
+            if aprovado_em_todas:
+                aprovados_count += 1
+            else:
+                alunos_em_risco += 1
+
+        media_geral = sum(all_medias) / len(all_medias) if all_medias else None
+        pct_aprovados = (aprovados_count / num_alunos) * 100.0 if num_alunos > 0 else None
+
+        turma_results.append({
+            "turma_id": turma.id,
+            "turma_nome": turma.nome,
+            "num_alunos": num_alunos,
+            "media_geral": media_geral,
+            "pct_aprovados": pct_aprovados,
+        })
+
+    return {
+        "turmas": turma_results,
+        "alunos_em_risco": alunos_em_risco,
     }
 
 

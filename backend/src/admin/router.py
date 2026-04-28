@@ -27,6 +27,11 @@ def dashboard(db: Session = Depends(get_db), _: Usuario = admin_required):
     return service.get_dashboard_counts(db)
 
 
+@router.get("/dashboard/desempenho", response_model=schemas.DashboardDesempenho)
+def dashboard_desempenho(db: Session = Depends(get_db), _: Usuario = admin_required):
+    return service.get_dashboard_desempenho(db)
+
+
 # ---------------------------------------------------------------------------
 # Alunos
 # ---------------------------------------------------------------------------
