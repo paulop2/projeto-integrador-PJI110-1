@@ -17,10 +17,18 @@ Pais acompanham o desempenho escolar dos filhos — notas e presença — sem pr
 - [x] Docente registra chamada (presença/falta) por aula e turma — Validated in Phase 4: Portal do Professor
 - [x] Docente lança notas por aluno e disciplina — Validated in Phase 4: Portal do Professor
 
+### Validated
+
+- [x] Autenticação com três perfis distintos: administrador, docente e pai — Validated in Phase 2: Autenticação
+- [x] Administrador gerencia alunos, turmas e usuários do sistema — Validated in Phase 3: Painel Admin
+- [x] Docente registra chamada (presença/falta) por aula e turma — Validated in Phase 4: Portal do Professor
+- [x] Docente lança notas por aluno e disciplina — Validated in Phase 4: Portal do Professor
+- [x] Pai visualiza boletim (notas) e frequência do filho — Validated in Phase 5: Portal do Responsável
+- [x] Dashboard com métricas de desempenho por turma — Validated in Phase 6: Dashboard e Polish
+
 ### Active
 
-- [ ] Pai visualiza boletim (notas) e frequência do filho
-- [ ] Dashboard/relatórios de desempenho
+- [ ] Deploy em produção (Render + GitHub Actions)
 
 ### Out of Scope
 
@@ -56,4 +64,4 @@ Pais acompanham o desempenho escolar dos filhos — notas e presença — sem pr
 | SQLite como banco de dados | Simplicidade para protótipo, sem necessidade de servidor de banco | Working |
 
 ---
-*Last updated: 2026-04-27 after Phase 4 completion*
+*Last updated: 2026-04-28 after Phase 6 completion*

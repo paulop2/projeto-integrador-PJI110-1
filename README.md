@@ -12,7 +12,9 @@ Desenvolvido como Projeto Integrador (PJI110) — Turma 004 da UNIVESP, Polo Val
 - **Painel Administrativo** — CRUD completo de alunos, turmas, disciplinas, professores e responsáveis
 - **Portal do Professor** — Registro de chamada (presença/falta) e lançamento de notas por turma/bimestre
 - **Portal do Responsável** — Boletim e frequência do filho com cálculos automáticos e alertas LDB
-- **Dashboard** — Visão agregada de desempenho para admin e professores
+- **Dashboard** — Visão agregada de desempenho para admin (alertas de risco + tabela por turma) e professores (média e % aprovação por turma)
+- **Skeleton Loading** — Estados de carregamento com placeholders animados em todas as telas
+- **Toast de Erros** — Mensagens amigáveis em português para falhas de API
 
 ---
 
@@ -23,7 +25,7 @@ Separação frontend/backend para permitir trabalho paralelo entre os membros da
 | Camada | Tecnologia |
 |--------|------------|
 | **Backend** | Python 3.12 + FastAPI + SQLAlchemy 2.0 (síncrono) + Alembic + pytest |
-| **Frontend** | React 18 + TypeScript + Vite + Tailwind CSS v3 + React Router 6 + TanStack Query 5 + react-hook-form + zod |
+| **Frontend** | React 19 + TypeScript + Vite + Tailwind CSS v3 + React Router 6 + TanStack Query 5 + react-hook-form + zod + Sonner |
 | **Banco de Dados** | SQLite (WAL mode, foreign keys ON) |
 | **Autenticação** | JWT (localStorage, 7 dias, renovação automática) |
 | **Email** | Mailtrap (desenvolvimento/demo) |
@@ -104,7 +106,7 @@ O frontend estará disponível em `http://localhost:5173`.
 │   └── requirements.txt
 ├── frontend/             # Aplicação React
 │   ├── src/
-│   │   ├── components/   # Componentes reutilizáveis (ProtectedRoute, AppLayout, AdminLayout, Modal, EntityTable, TurmaCard, BoletimTable, StatusBadge, SummaryCard)
+│   │   ├── components/   # Componentes reutilizáveis (ProtectedRoute, AppLayout, AdminLayout, Modal, EntityTable, TurmaCard, BoletimTable, StatusBadge, SummaryCard, SkeletonCard, SkeletonTable)
 │   │   ├── pages/        # Telas (Login, AdminDashboard, ProfessorLandingPage, ProfessorTurmaPage, ResponsavelBoletimPage)
 │   │   ├── contexts/     # Contextos React (AuthContext)
 │   │   ├── services/     # Clientes HTTP (api.ts com interceptores)
@@ -127,9 +129,10 @@ O frontend estará disponível em `http://localhost:5173`.
 | 3. Painel Admin | ✅ Concluída | CRUD completo de 6 entidades com modais, validação, paginação e testes |
 | 4. Portal do Professor | ✅ Concluída | Chamada e notas por turma/bimestre, com controle de acesso por turma vinculada |
 | 5. Portal do Responsável | ✅ Concluída | Boletim e frequência com cálculo automático de média, alertas LDB e verificação de IDOR |
-| 6. Dashboard e Polish | ⏳ Pendente | Dashboard agregado, alertas LDB, estados de erro/loading |
+| 6. Dashboard e Polish | ✅ Concluída | Dashboard com métricas agregadas, alertas LDB, skeleton loading e toast de erros |
+| 7. Deploy | ⏳ Pendente | Render + GitHub Actions CI/CD |
 
-> **Progresso atual:** 5/6 fases concluídas (~83%)
+> **Progresso atual:** 6/7 fases concluídas (~86%)
 
 ---
 
