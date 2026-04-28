@@ -261,3 +261,48 @@ def test_frequencia_aggregation(client, test_db, professor_user, professor_heade
     assert row["total_aulas"] == 2
     assert row["total_presentes"] == 1
     assert row["percentual"] == pytest.approx(50.0)
+
+
+# ---------------------------------------------------------------------------
+# PROF-06: Minhas turmas with LDB metrics
+# ---------------------------------------------------------------------------
+
+def test_professor_minhas_turmas_with_metrics(client, test_db, professor_user, professor_headers):
+    """GET /professor/minhas-turmas includes media_geral and pct_aprovados."""
+    prof, turma, disciplina, aluno = _setup_professor_with_turma(test_db, professor_user)
+
+    # Add avaliacao, nota, chamada, presenca
+    av = Avaliacao(
+        turma_id=turma.id,
+        disciplina_id=disciplina.id,
+        professor_id=prof.id,
+        bimestre=1,
+        titulo="AV1",
+        valor_maximo=10.0,
+    )
+    test_db.add(av)
+    test_db.flush()
+
+    nota = Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=8.0)
+    test_db.add(nota)
+
+    chamada = Chamada(
+        turma_id=turma.id,
+        disciplina_id=disciplina.id,
+        professor_id=prof.id,
+        data=date(2026, 4, 1),
+    )
+    test_db.add(chamada)
+    test_db.flush()
+
+    presenca = Presenca(chamada_id=chamada.id, aluno_id=aluno.id, presente=True)
+    test_db.add(presenca)
+    test_db.commit()
+
+    response = client.get("/professor/minhas-turmas", headers=professor_headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    turma_data = data[0]
+    assert turma_data["media_geral"] == pytest.approx(8.0)
+    assert turma_data["pct_aprovados"] == pytest.approx(100.0)

@@ -5,6 +5,7 @@ Stubs: tests are written in full but backend module (src/admin/) does not exist 
 All tests will FAIL with 404/422/ImportError until Plan 02 implements the backend.
 Run after Plan 02 to confirm green.
 """
+from datetime import date
 import pytest
 
 
@@ -243,3 +244,115 @@ def test_admin_self_deactivation_blocked(client, admin_headers, admin_user):
     )
     # Must return 400 (business rule) or 403 — NOT 200
     assert response.status_code in (400, 403)
+
+
+# ---------------------------------------------------------------------------
+# ADMIN-07: Dashboard desempenho aggregation
+# ---------------------------------------------------------------------------
+
+def test_admin_dashboard_desempenho(client, admin_headers, test_db):
+    """GET /admin/dashboard/desempenho returns aggregated LDB metrics per turma."""
+    from src.models.usuario import Usuario, TipoUsuario
+    from src.models.professor import Professor
+    from src.models.turma import Turma
+    from src.models.disciplina import Disciplina
+    from src.models.aluno import Aluno
+    from src.models.professor_turma import ProfessorTurma
+    from src.models.avaliacao import Avaliacao
+    from src.models.nota import Nota
+    from src.models.chamada import Chamada
+    from src.models.presenca import Presenca
+    from src.auth.service import hash_password
+
+    # Create professor
+    u = Usuario(
+        email="prof_dash@test.com",
+        senha_hash=hash_password("pass"),
+        tipo=TipoUsuario.professor,
+        ativo=True,
+    )
+    test_db.add(u)
+    test_db.flush()
+    prof = Professor(usuario_id=u.id, nome="Prof Dash")
+    test_db.add(prof)
+    test_db.flush()
+
+    # Create turma, disciplina, aluno
+    turma = Turma(nome="8A", ano=2026, serie="8", turno="manha")
+    test_db.add(turma)
+    disciplina = Disciplina(nome="Matematica")
+    test_db.add(disciplina)
+    test_db.flush()
+
+    aluno = Aluno(nome="Aluno A", matricula="MAT001", ativo=True, turma_id=turma.id)
+    test_db.add(aluno)
+    test_db.flush()
+
+    # Link professor to turma
+    link = ProfessorTurma(professor_id=prof.id, turma_id=turma.id, disciplina_id=disciplina.id)
+    test_db.add(link)
+    test_db.flush()
+
+    # Create avaliacao, nota, chamada, presenca for passing student
+    av = Avaliacao(
+        turma_id=turma.id,
+        disciplina_id=disciplina.id,
+        professor_id=prof.id,
+        bimestre=1,
+        titulo="AV1",
+        valor_maximo=10.0,
+    )
+    test_db.add(av)
+    test_db.flush()
+
+    nota = Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=8.0)
+    test_db.add(nota)
+
+    chamada = Chamada(
+        turma_id=turma.id,
+        disciplina_id=disciplina.id,
+        professor_id=prof.id,
+        data=date(2026, 4, 1),
+    )
+    test_db.add(chamada)
+    test_db.flush()
+
+    presenca = Presenca(chamada_id=chamada.id, aluno_id=aluno.id, presente=True)
+    test_db.add(presenca)
+    test_db.commit()
+
+    # First check — passing student → 0 at risk
+    response = client.get("/admin/dashboard/desempenho", headers=admin_headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert "turmas" in data
+    assert "alunos_em_risco" in data
+    assert data["alunos_em_risco"] == 0
+    assert len(data["turmas"]) == 1
+    turma_data = data["turmas"][0]
+    assert turma_data["turma_id"] == turma.id
+    assert turma_data["num_alunos"] == 1
+    assert turma_data["media_geral"] == pytest.approx(8.0)
+    assert turma_data["pct_aprovados"] == pytest.approx(100.0)
+
+    # Add failing student
+    aluno_fail = Aluno(nome="Aluno B", matricula="MAT002", ativo=True, turma_id=turma.id)
+    test_db.add(aluno_fail)
+    test_db.flush()
+
+    nota_fail = Nota(avaliacao_id=av.id, aluno_id=aluno_fail.id, valor=4.0)
+    test_db.add(nota_fail)
+
+    presenca_fail = Presenca(chamada_id=chamada.id, aluno_id=aluno_fail.id, presente=True)
+    test_db.add(presenca_fail)
+    test_db.commit()
+
+    # Second check — one failing → 1 at risk, 50% approval
+    response = client.get("/admin/dashboard/desempenho", headers=admin_headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["alunos_em_risco"] == 1
+    turma_data = data["turmas"][0]
+    assert turma_data["num_alunos"] == 2
+    assert turma_data["media_geral"] == pytest.approx(6.0)
+    assert turma_data["pct_aprovados"] == pytest.approx(50.0)
