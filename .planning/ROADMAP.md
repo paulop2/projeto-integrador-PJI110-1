@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Autenticação** - Login JWT com três perfis e rotas protegidas por papel
 - [x] **Phase 3: Painel Admin** - CRUD completo de alunos, turmas, disciplinas, professores e responsáveis
 - [x] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
-- [ ] **Phase 5: Portal do Responsável** - Boletim e frequência do filho com cálculos automáticos
+- [x] **Phase 5: Portal do Responsável** - Boletim e frequência do filho com cálculos automáticos
 - [ ] **Phase 6: Dashboard e Polish** - Dashboard agregado, alertas LDB e estados de erro/loading
 
 ## Phase Details
@@ -119,13 +119,13 @@ Cross-cutting constraints:
 
 Plans:
 **Wave 1**
-- [ ] 05-01-PLAN.md — Backend module + test scaffold: responsavel/ package (schemas, router, service), conftest fixtures (responsavel_user + responsavel_headers), test_responsavel.py (RESP-01 through RESP-06 + access control), main.py registration
+- [x] 05-01-PLAN.md — Backend module + test scaffold: responsavel/ package (schemas, router, service), conftest fixtures (responsavel_user + responsavel_headers), test_responsavel.py (RESP-01 through RESP-06 + access control), main.py registration
 
 **Wave 2** *(blocked on Wave 1 — 05-02 runs after 05-01)*
-- [ ] 05-02-PLAN.md — Frontend responsavel portal: ResponsavelBoletimPage, 5 components (ChildSelector, SummaryCard, BoletimTable, StatusBadge, EmptyState), App.tsx import swap
+- [x] 05-02-PLAN.md — Frontend responsavel portal: ResponsavelBoletimPage, 5 components (ChildSelector, SummaryCard, BoletimTable, StatusBadge, EmptyState), App.tsx import swap
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 05-03-PLAN.md — Verification: full pytest suite + TypeScript build + human browser verification of RESP-01 through RESP-06
+- [x] 05-03-PLAN.md — Verification: full pytest suite + TypeScript build + human browser verification of RESP-01 through RESP-06
 
 Cross-cutting constraints:
 - `_get_responsavel(db, usuario)` helper required in every service function
@@ -155,5 +155,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Autenticação | 6/6 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 3. Painel Admin | 5/5 | ✓ Complete | 2026-04-27 |
 | 4. Portal do Professor | 4/4 | ✓ Complete (verification deferred) | 2026-04-27 |
-| 5. Portal do Responsável | 0/3 | In progress | - |
+| 5. Portal do Responsável | 3/3 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 6. Dashboard e Polish | 0/? | Not started | - |
