@@ -44,6 +44,45 @@ def _assert_professor_owns_turma(db: Session, professor_id: int, turma_id: int) 
         raise HTTPException(status_code=403, detail="Acesso negado a esta turma")
 
 
+def _calcular_aprovado(db: Session, aluno_id: int, turma_id: int, disciplina_id: int) -> tuple:
+    """Returns (media, freq_pct, aprovado) for a given (aluno, turma, disciplina)."""
+    avaliacoes = db.query(Avaliacao).filter(
+        Avaliacao.turma_id == turma_id,
+        Avaliacao.disciplina_id == disciplina_id,
+    ).all()
+    notas = []
+    for av in avaliacoes:
+        nota = db.query(Nota).filter(
+            Nota.avaliacao_id == av.id,
+            Nota.aluno_id == aluno_id,
+        ).first()
+        if nota:
+            notas.append(nota.valor)
+    media = sum(notas) / len(notas) if notas else None
+
+    chamadas = db.query(Chamada).filter(
+        Chamada.turma_id == turma_id,
+        Chamada.disciplina_id == disciplina_id,
+    ).all()
+    total_chamadas = len(chamadas)
+    if total_chamadas == 0:
+        freq_pct = None
+    else:
+        chamada_ids = [c.id for c in chamadas]
+        presentes = db.query(Presenca).filter(
+            Presenca.aluno_id == aluno_id,
+            Presenca.chamada_id.in_(chamada_ids),
+            Presenca.presente == True,
+        ).count()
+        freq_pct = (presentes / total_chamadas) * 100.0
+
+    aprovado = (
+        media is not None and media >= 5.0
+        and freq_pct is not None and freq_pct >= 75.0
+    )
+    return media, freq_pct, aprovado
+
+
 def get_minhas_turmas(db: Session, current_user: Usuario) -> list:
     prof = _get_professor(db, current_user)
     links = db.query(ProfessorTurma).filter(
@@ -68,6 +107,42 @@ def get_minhas_turmas(db: Session, current_user: Usuario) -> list:
         disciplina = db.query(Disciplina).filter(Disciplina.id == link.disciplina_id).first()
         if disciplina:
             turma_map[link.turma_id]["disciplinas"].append(disciplina.nome)
+
+    # Calculate metrics for each turma
+    for turma_id, turma_data in turma_map.items():
+        alunos = db.query(Aluno).filter(
+            Aluno.turma_id == turma_id,
+            Aluno.ativo == True,
+        ).all()
+        disc_ids = (
+            db.query(ProfessorTurma.disciplina_id)
+            .filter(ProfessorTurma.turma_id == turma_id)
+            .distinct()
+            .all()
+        )
+        disc_ids = [row[0] for row in disc_ids]
+
+        all_medias = []
+        aprovados_count = 0
+
+        for aluno in alunos:
+            aprovado_em_todas = True
+            if not disc_ids:
+                aprovado_em_todas = False
+            for disc_id in disc_ids:
+                media, freq_pct, aprovado = _calcular_aprovado(
+                    db, aluno.id, turma_id, disc_id
+                )
+                if media is not None:
+                    all_medias.append(media)
+                if not aprovado:
+                    aprovado_em_todas = False
+            if aprovado_em_todas:
+                aprovados_count += 1
+
+        num_alunos = len(alunos)
+        turma_data["media_geral"] = sum(all_medias) / len(all_medias) if all_medias else None
+        turma_data["pct_aprovados"] = (aprovados_count / num_alunos) * 100.0 if num_alunos > 0 else None
 
     return list(turma_map.values())
 
