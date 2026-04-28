@@ -11,6 +11,7 @@ from src.auth.service import maybe_renew_token
 from src.password_reset.router import router as reset_router
 from src.admin.router import router as admin_router
 from src.professor.router import router as professor_router
+from src.responsavel.router import router as responsavel_router
 
 
 app = FastAPI(
@@ -50,6 +51,7 @@ app.include_router(auth_router)
 app.include_router(reset_router, prefix="/auth")
 app.include_router(admin_router)
 app.include_router(professor_router)
+app.include_router(responsavel_router)
 
 
 @app.get("/health")
