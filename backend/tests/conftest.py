@@ -98,3 +98,25 @@ def professor_headers(professor_user):
     """Authorization headers for a professor user JWT (used to test 403)."""
     token = create_access_token({"sub": str(professor_user.id), "tipo": "professor"})
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture(scope="function")
+def responsavel_user(test_db):
+    """Creates a responsavel Usuario in the test DB and returns it."""
+    user = Usuario(
+        email="resp@test.com",
+        senha_hash=hash_password("resppass"),
+        tipo=TipoUsuario.responsavel,
+        ativo=True,
+    )
+    test_db.add(user)
+    test_db.commit()
+    test_db.refresh(user)
+    return user
+
+
+@pytest.fixture(scope="function")
+def responsavel_headers(responsavel_user):
+    """Authorization headers for a responsavel user JWT (used in RESP tests)."""
+    token = create_access_token({"sub": str(responsavel_user.id), "tipo": "responsavel"})
+    return {"Authorization": f"Bearer {token}"}
