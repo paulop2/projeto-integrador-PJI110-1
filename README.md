@@ -92,19 +92,20 @@ O frontend estará disponível em `http://localhost:5173`.
 ├── backend/              # API FastAPI
 │   ├── alembic/          # Migrations
 │   ├── src/
-│   │   ├── auth/         # Módulo de autenticação (login, JWT, dependências)
+│   │   ├── auth/         # Autenticação JWT (login, dependências, hash)
 │   │   ├── password_reset/ # Recuperação de senha (tokens opacos, SMTP)
-│   │   ├── auth/         # Módulo de autenticação (login, JWT, dependências)
-│   │   ├── admin/        # Módulo administrativo (CRUD de 6 entidades)
-│   │   ├── models/       # SQLAlchemy models (Usuario, Aluno, Turma, Disciplina, Professor, Responsável, ProfessorTurma, ResetToken)
+│   │   ├── admin/        # CRUD administrativo (6 entidades)
+│   │   ├── professor/    # Portal do professor (chamada, notas, frequência)
+│   │   ├── responsavel/  # Portal do responsável (boletim, meus-filhos)
+│   │   ├── models/       # SQLAlchemy models (11 tabelas)
 │   │   ├── config.py     # Configurações (pydantic-settings)
 │   │   └── main.py       # Entry point FastAPI
 │   ├── .env.example
 │   └── requirements.txt
 ├── frontend/             # Aplicação React
 │   ├── src/
-│   │   ├── components/   # Componentes reutilizáveis (ProtectedRoute, AppLayout, AdminLayout, Modal, EntityTable)
-│   │   ├── pages/        # Telas (Login, AdminDashboard, AlunosPage, TurmasPage, DisciplinasPage, ProfessoresPage, ResponsaveisPage)
+│   │   ├── components/   # Componentes reutilizáveis (ProtectedRoute, AppLayout, AdminLayout, Modal, EntityTable, TurmaCard, BoletimTable, StatusBadge, SummaryCard)
+│   │   ├── pages/        # Telas (Login, AdminDashboard, ProfessorLandingPage, ProfessorTurmaPage, ResponsavelBoletimPage)
 │   │   ├── contexts/     # Contextos React (AuthContext)
 │   │   ├── services/     # Clientes HTTP (api.ts com interceptores)
 │   │   └── main.tsx      # Entry point React
@@ -124,11 +125,11 @@ O frontend estará disponível em `http://localhost:5173`.
 | 1. Infraestrutura | ✅ Concluída | Esqueleto backend + frontend + banco + migrations |
 | 2. Autenticação | ✅ Concluída | Login JWT, rotas protegidas por papel, recuperação de senha, localStorage com renovação automática |
 | 3. Painel Admin | ✅ Concluída | CRUD completo de 6 entidades com modais, validação, paginação e testes |
-| 4. Portal do Professor | 🚧 Em andamento | Chamada e notas por turma/bimestre |
-| 5. Portal do Responsável | ⏳ Pendente | Boletim e frequência |
+| 4. Portal do Professor | ✅ Concluída | Chamada e notas por turma/bimestre, com controle de acesso por turma vinculada |
+| 5. Portal do Responsável | ✅ Concluída | Boletim e frequência com cálculo automático de média, alertas LDB e verificação de IDOR |
 | 6. Dashboard e Polish | ⏳ Pendente | Dashboard agregado, alertas LDB, estados de erro/loading |
 
-> **Progresso atual:** 3/6 fases concluídas (~50%)
+> **Progresso atual:** 5/6 fases concluídas (~83%)
 
 ---
 
