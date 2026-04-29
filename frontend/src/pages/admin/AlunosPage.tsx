@@ -70,7 +70,6 @@ function useCreateAluno() {
       await qc.invalidateQueries({ queryKey: ['alunos'] })
       toast.success('Aluno criado com sucesso')
     },
-    onError: () => toast.error('Erro ao criar aluno'),
   })
 }
 
@@ -83,7 +82,6 @@ function useUpdateAluno() {
       await qc.invalidateQueries({ queryKey: ['alunos'] })
       toast.success('Aluno atualizado com sucesso')
     },
-    onError: () => toast.error('Erro ao atualizar aluno'),
   })
 }
 
@@ -95,7 +93,6 @@ function useDeactivateAluno() {
       await qc.invalidateQueries({ queryKey: ['alunos'] })
       toast.success('Aluno desativado')
     },
-    onError: () => toast.error('Erro ao desativar aluno'),
   })
 }
 
@@ -121,6 +118,7 @@ function AlunoModal({ open, onClose, initial }: AlunoModalProps) {
   })
 
   useEffect(() => {
+    if (!open) return
     reset(
       initial
         ? {
@@ -131,7 +129,7 @@ function AlunoModal({ open, onClose, initial }: AlunoModalProps) {
           }
         : { nome: '', data_nascimento: null, turma_id: null, responsavel_id: null }
     )
-  }, [initial, reset, open])
+  }, [initial, reset])
 
   const onSubmit = (data: AlunoFormData) => {
     if (isEdit && initial) {
@@ -234,8 +232,8 @@ export default function AlunosPage() {
   const deactivateMutation = useDeactivateAluno()
 
   const openCreate = () => { setSelectedAluno(null); setModalOpen(true) }
-  const openEdit = (row: Record<string, unknown>) => { setSelectedAluno(row as unknown as AlunoOut); setModalOpen(true) }
-  const openDeactivate = (row: Record<string, unknown>) => { setToDeactivate(row as unknown as AlunoOut); setConfirmOpen(true) }
+  const openEdit = (row: AlunoOut) => { setSelectedAluno(row); setModalOpen(true) }
+  const openDeactivate = (row: AlunoOut) => { setToDeactivate(row); setConfirmOpen(true) }
 
   const handleDeactivate = () => {
     if (!toDeactivate) return
@@ -248,9 +246,9 @@ export default function AlunosPage() {
     <div className="p-8">
       <h1 className="text-2xl font-semibold text-gray-900 mb-6">Alunos</h1>
 
-      <EntityTable
+      <EntityTable<AlunoOut>
         columns={COLUMNS}
-        rows={(data?.items ?? []) as Record<string, unknown>[]}
+        rows={(data?.items ?? []) as AlunoOut[]}
         total={data?.total ?? 0}
         page={page}
         perPage={25}

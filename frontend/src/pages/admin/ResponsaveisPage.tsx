@@ -16,6 +16,7 @@ interface ResponsavelOut {
   telefone: string | null
   usuario_id: number
   email: string | null
+  aluno_ids: number[]
 }
 
 interface AlunoSelectItem {
@@ -61,10 +62,6 @@ function useCreateResponsavel() {
   return useMutation({
     mutationFn: (body: ResponsavelCreateData) => api.post('/admin/responsaveis', body).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['responsaveis'] }); await qc.invalidateQueries({ queryKey: ['alunos'] }); toast.success('Responsável criado com sucesso') },
-    onError: (e: unknown) => {
-      const msg = (e as { response?: { data?: { detail?: string } } })?.response?.data?.detail
-      toast.error(msg ?? 'Erro ao criar responsável')
-    },
   })
 }
 
@@ -74,7 +71,6 @@ function useUpdateResponsavel() {
     mutationFn: ({ id, body }: { id: number; body: ResponsavelUpdateData }) =>
       api.put(`/admin/responsaveis/${id}`, body).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['responsaveis'] }); await qc.invalidateQueries({ queryKey: ['alunos'] }); toast.success('Responsável atualizado') },
-    onError: () => toast.error('Erro ao atualizar responsável'),
   })
 }
 
@@ -83,7 +79,6 @@ function useDeactivateResponsavel() {
   return useMutation({
     mutationFn: (id: number) => api.post(`/admin/responsaveis/${id}/deactivate`).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['responsaveis'] }); toast.success('Responsável desativado') },
-    onError: () => toast.error('Erro ao desativar responsável'),
   })
 }
 
@@ -107,14 +102,15 @@ function ResponsavelModal({ open, onClose, initial }: ResponsavelModalProps) {
   })
 
   useEffect(() => {
-    const ids: number[] = []
+    if (!open) return
+    const ids = initial?.aluno_ids ?? []
     setSelectedAlunoIds(ids)
     reset(
       initial
         ? { nome: initial.nome, email: initial.email ?? '', senha: '', cpf: initial.cpf ?? null, telefone: initial.telefone ?? null, aluno_ids: ids }
         : { nome: '', email: '', senha: '', cpf: null, telefone: null, aluno_ids: [] }
     )
-  }, [initial, reset, open])
+  }, [initial, reset])
 
   const toggleAluno = (id: number) => {
     const next = selectedAlunoIds.includes(id)
@@ -216,17 +212,17 @@ export default function ResponsaveisPage() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-semibold text-gray-900 mb-6">Responsáveis</h1>
-      <EntityTable
+      <EntityTable<ResponsavelOut>
         columns={COLUMNS}
-        rows={(data?.items ?? []) as Record<string, unknown>[]}
+        rows={(data?.items ?? []) as ResponsavelOut[]}
         total={data?.total ?? 0}
         page={page}
         perPage={25}
         search={search}
         onPageChange={setPage}
         onSearch={(q) => { setSearch(q); setPage(1) }}
-        onEdit={(row) => { setSelected(row as unknown as ResponsavelOut); setModalOpen(true) }}
-        onDeactivate={(row) => { setToDeactivate(row as unknown as ResponsavelOut); setConfirmOpen(true) }}
+        onEdit={(row) => { setSelected(row); setModalOpen(true) }}
+        onDeactivate={(row) => { setToDeactivate(row); setConfirmOpen(true) }}
         isLoading={isLoading}
         onNew={() => { setSelected(null); setModalOpen(true) }}
         newLabel="Novo Responsável"

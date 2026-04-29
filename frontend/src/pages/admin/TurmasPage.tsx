@@ -14,6 +14,7 @@ interface TurmaOut {
   ano: number
   serie: string
   turno: string
+  professor_turma: { disciplina_id: number; professor_id: number }[]
 }
 
 interface ProfessorSelectItem {
@@ -67,7 +68,6 @@ function useCreateTurma() {
   return useMutation({
     mutationFn: (body: TurmaFormData) => api.post('/admin/turmas', body).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['turmas'] }); await qc.invalidateQueries({ queryKey: ['turmas-select'] }); toast.success('Turma criada com sucesso') },
-    onError: () => toast.error('Erro ao criar turma'),
   })
 }
 
@@ -77,7 +77,6 @@ function useUpdateTurma() {
     mutationFn: ({ id, body }: { id: number; body: TurmaFormData }) =>
       api.put(`/admin/turmas/${id}`, body).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['turmas'] }); await qc.invalidateQueries({ queryKey: ['turmas-select'] }); toast.success('Turma atualizada com sucesso') },
-    onError: () => toast.error('Erro ao atualizar turma'),
   })
 }
 
@@ -104,12 +103,13 @@ function TurmaModal({ open, onClose, initial }: TurmaModalProps) {
   const { fields, append, remove } = useFieldArray({ control, name: 'professor_turma' })
 
   useEffect(() => {
+    if (!open) return
     reset(
       initial
-        ? { nome: initial.nome, ano: initial.ano, serie: initial.serie, turno: initial.turno, professor_turma: [] }
+        ? { nome: initial.nome, ano: initial.ano, serie: initial.serie, turno: initial.turno, professor_turma: initial.professor_turma ?? [] }
         : defaultValues
     )
-  }, [initial, reset, open])
+  }, [initial, reset])
 
   const onSubmit = (data: TurmaFormData) => {
     if (isEdit && initial) {
@@ -213,14 +213,14 @@ export default function TurmasPage() {
   const { data, isLoading } = useTurmas(page, search)
 
   const openCreate = () => { setSelected(null); setModalOpen(true) }
-  const openEdit = (row: Record<string, unknown>) => { setSelected(row as unknown as TurmaOut); setModalOpen(true) }
+  const openEdit = (row: TurmaOut) => { setSelected(row); setModalOpen(true) }
 
   return (
     <div className="p-8">
       <h1 className="text-2xl font-semibold text-gray-900 mb-6">Turmas</h1>
-      <EntityTable
+      <EntityTable<TurmaOut>
         columns={COLUMNS}
-        rows={(data?.items ?? []) as Record<string, unknown>[]}
+        rows={(data?.items ?? []) as TurmaOut[]}
         total={data?.total ?? 0}
         page={page}
         perPage={25}
@@ -228,7 +228,6 @@ export default function TurmasPage() {
         onPageChange={setPage}
         onSearch={(q) => { setSearch(q); setPage(1) }}
         onEdit={openEdit}
-        onDeactivate={() => {}}
         isLoading={isLoading}
         onNew={openCreate}
         newLabel="Nova Turma"
