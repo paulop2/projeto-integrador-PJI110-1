@@ -44,28 +44,21 @@ function useTurmaInfo(turmaId: number) {
   })
 }
 
-// Fetch alunos for a turma (from admin endpoint — read-only)
+// Fetch alunos for a turma (professor endpoint)
 function useTurmaAlunos(turmaId: number) {
   return useQuery<Aluno[]>({
     queryKey: ['turma-alunos', turmaId],
     queryFn: () =>
-      api.get(`/admin/alunos?turma_id=${turmaId}&limit=200`).then((r) => {
-        const result = r.data
-        // Support both paginated {items: [...]} and plain array responses
-        return Array.isArray(result) ? result : (result.items ?? [])
-      }),
+      api.get(`/professor/turmas/${turmaId}/alunos`).then((r) => r.data),
   })
 }
 
-// Fetch disciplina ids for this professor+turma
+// Fetch disciplinas for this professor+turma
 function useTurmaDisciplinas(turmaId: number) {
   return useQuery<Disciplina[]>({
     queryKey: ['turma-disciplinas', turmaId],
     queryFn: () =>
-      api.get(`/admin/disciplinas?limit=200`).then((r) => {
-        const all: Disciplina[] = Array.isArray(r.data) ? r.data : (r.data.items ?? [])
-        return all
-      }),
+      api.get(`/professor/turmas/${turmaId}/disciplinas`).then((r) => r.data),
   })
 }
 
@@ -112,12 +105,8 @@ export default function ProfessorTurmaPage() {
   const { data: chamadaData } = useChamada(turmaId, selectedDate)
   const saveChamada = useSaveChamada(turmaId)
 
-  // Derive disciplinas this professor teaches in this turma
-  // turmaInfo.disciplinas is a list of disciplina names — we need IDs
-  // Fetch the names-to-id mapping from allDisciplinas
-  const turmaDisciplinas: Disciplina[] = (allDisciplinas ?? []).filter((d) =>
-    (turmaInfo?.disciplinas ?? []).includes(d.nome)
-  )
+  // Disciplinas this professor teaches in this turma (already filtered by backend)
+  const turmaDisciplinas: Disciplina[] = allDisciplinas ?? []
 
   // Auto-select first disciplina
   const effectiveDisciplinaId =

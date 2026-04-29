@@ -284,3 +284,25 @@ def get_frequencia(db: Session, current_user: Usuario, turma_id: int) -> list:
             "percentual": percentual,
         })
     return result
+
+
+def get_turma_alunos(db: Session, current_user: Usuario, turma_id: int) -> list:
+    prof = _get_professor(db, current_user)
+    _assert_professor_owns_turma(db, prof.id, turma_id)
+    alunos = db.query(Aluno).filter(Aluno.turma_id == turma_id, Aluno.ativo == True).all()
+    return [{"id": a.id, "nome": a.nome} for a in alunos]
+
+
+def get_turma_disciplinas(db: Session, current_user: Usuario, turma_id: int) -> list:
+    prof = _get_professor(db, current_user)
+    _assert_professor_owns_turma(db, prof.id, turma_id)
+    links = db.query(ProfessorTurma).filter(
+        ProfessorTurma.professor_id == prof.id,
+        ProfessorTurma.turma_id == turma_id,
+    ).all()
+    result = []
+    for link in links:
+        disciplina = db.query(Disciplina).filter(Disciplina.id == link.disciplina_id).first()
+        if disciplina:
+            result.append({"id": disciplina.id, "nome": disciplina.nome})
+    return result

@@ -82,6 +82,55 @@ def test_ownership_check(client, test_db, professor_user, professor_headers):
 
 
 # ---------------------------------------------------------------------------
+# Turma alunos / disciplinas helpers
+# ---------------------------------------------------------------------------
+
+def test_get_turma_alunos(client, test_db, professor_user, professor_headers):
+    """GET /professor/turmas/:id/alunos returns alunos for the linked turma."""
+    prof, turma, disciplina, aluno = _setup_professor_with_turma(test_db, professor_user)
+
+    response = client.get(
+        f"/professor/turmas/{turma.id}/alunos",
+        headers=professor_headers,
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == aluno.id
+    assert data[0]["nome"] == aluno.nome
+
+
+def test_get_turma_alunos_403_for_unlinked(client, test_db, professor_user, professor_headers):
+    """Professor gets 403 for alunos of a turma they do not own."""
+    prof = Professor(usuario_id=professor_user.id, nome="Prof Dono", cpf="00000000002")
+    test_db.add(prof)
+    turma = Turma(nome="9B", ano=2026, serie="9", turno="manha")
+    test_db.add(turma)
+    test_db.commit()
+
+    response = client.get(
+        f"/professor/turmas/{turma.id}/alunos",
+        headers=professor_headers,
+    )
+    assert response.status_code == 403
+
+
+def test_get_turma_disciplinas(client, test_db, professor_user, professor_headers):
+    """GET /professor/turmas/:id/disciplinas returns disciplinas for the linked turma."""
+    prof, turma, disciplina, aluno = _setup_professor_with_turma(test_db, professor_user)
+
+    response = client.get(
+        f"/professor/turmas/{turma.id}/disciplinas",
+        headers=professor_headers,
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == disciplina.id
+    assert data[0]["nome"] == disciplina.nome
+
+
+# ---------------------------------------------------------------------------
 # PROF-01: Chamada create (PROF-01)
 # ---------------------------------------------------------------------------
 
