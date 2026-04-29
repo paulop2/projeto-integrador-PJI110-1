@@ -1,9 +1,5 @@
 """
 Admin CRUD endpoint tests — Phase 3.
-
-Stubs: tests are written in full but backend module (src/admin/) does not exist yet.
-All tests will FAIL with 404/422/ImportError until Plan 02 implements the backend.
-Run after Plan 02 to confirm green.
 """
 from datetime import date
 import pytest
