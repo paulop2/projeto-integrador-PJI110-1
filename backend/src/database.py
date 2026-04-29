@@ -13,6 +13,8 @@ engine = create_engine(
 @event.listens_for(engine, "connect")
 def set_sqlite_pragmas(dbapi_conn, connection_record):
     """Configura pragmas SQLite em toda nova conexão — WAL mode + FK enforcement."""
+    if "sqlite" not in str(engine.url):
+        return
     cursor = dbapi_conn.cursor()
     cursor.execute("PRAGMA journal_mode=WAL")   # WAL mode para leituras concorrentes
     cursor.execute("PRAGMA foreign_keys=ON")     # Enforça constraints de FK
