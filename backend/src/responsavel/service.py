@@ -120,11 +120,14 @@ def get_boletim(db: Session, current_user: Usuario, aluno_id: int) -> list:
             ).count()
             freq_pct = (total_presentes / total_aulas) * 100.0
 
-        # Step 4: Approval rule (LDB completa: media >= 5.0 AND freq >= 75%)
-        aprovado = (
-            media is not None and media >= 5.0
-            and freq_pct is not None and freq_pct >= 75.0
-        )
+        # Step 4: Status — only "aprovado"/"reprovado" when all 4 bimestres are graded
+        todos_bimestres = all(v is not None for v in notas_por_bimestre.values())
+        if not todos_bimestres:
+            status = "em_andamento"
+        elif media is not None and media >= 5.0 and freq_pct is not None and freq_pct >= 75.0:
+            status = "aprovado"
+        else:
+            status = "reprovado"
 
         result.append({
             "disciplina_id": disc_id,
@@ -137,6 +140,6 @@ def get_boletim(db: Session, current_user: Usuario, aluno_id: int) -> list:
             "total_aulas": total_aulas,
             "total_presentes": total_presentes,
             "freq_pct": freq_pct,
-            "aprovado": aprovado,
+            "status": status,
         })
     return result

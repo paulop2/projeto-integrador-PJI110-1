@@ -251,14 +251,15 @@ def test_freq_below_threshold(client, test_db, responsavel_user, responsavel_hea
 # ---------------------------------------------------------------------------
 
 def test_approval_rule_pass(client, test_db, responsavel_user, responsavel_headers):
-    """aprovado=True when media >= 5.0 AND freq_pct >= 75% (RESP-05, LDB rule)."""
+    """status='aprovado' when all 4 bimestres graded, media >= 5.0, freq_pct >= 75% (RESP-05)."""
     resp, turma, disciplina, aluno, prof = _setup_responsavel_with_filho(test_db, responsavel_user)
 
-    # Nota: 8.0
-    av = Avaliacao(turma_id=turma.id, disciplina_id=disciplina.id, professor_id=prof.id, titulo="Prova", bimestre=1, valor_maximo=10.0)
-    test_db.add(av)
-    test_db.flush()
-    test_db.add(Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=8.0))
+    # Notas: 8.0 em todos os 4 bimestres
+    for bim in range(1, 5):
+        av = Avaliacao(turma_id=turma.id, disciplina_id=disciplina.id, professor_id=prof.id, titulo=f"Prova {bim}", bimestre=bim, valor_maximo=10.0)
+        test_db.add(av)
+        test_db.flush()
+        test_db.add(Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=8.0))
 
     # Frequência: 4/4 = 100%
     for i in range(4):
@@ -269,17 +270,18 @@ def test_approval_rule_pass(client, test_db, responsavel_user, responsavel_heade
     test_db.commit()
 
     response = client.get(f"/responsavel/boletim?aluno_id={aluno.id}", headers=responsavel_headers)
-    assert response.json()[0]["aprovado"] is True
+    assert response.json()[0]["status"] == "aprovado"
 
 
 def test_approval_rule_fail_low_media(client, test_db, responsavel_user, responsavel_headers):
-    """aprovado=False when media < 5.0, even with good frequencia (RESP-05)."""
+    """status='reprovado' when all 4 bimestres graded but media < 5.0 (RESP-05)."""
     resp, turma, disciplina, aluno, prof = _setup_responsavel_with_filho(test_db, responsavel_user)
 
-    av = Avaliacao(turma_id=turma.id, disciplina_id=disciplina.id, professor_id=prof.id, titulo="Prova", bimestre=1, valor_maximo=10.0)
-    test_db.add(av)
-    test_db.flush()
-    test_db.add(Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=4.0))  # below 5.0
+    for bim in range(1, 5):
+        av = Avaliacao(turma_id=turma.id, disciplina_id=disciplina.id, professor_id=prof.id, titulo=f"Prova {bim}", bimestre=bim, valor_maximo=10.0)
+        test_db.add(av)
+        test_db.flush()
+        test_db.add(Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=4.0))  # below 5.0
 
     for i in range(4):
         chamada = Chamada(turma_id=turma.id, disciplina_id=disciplina.id, professor_id=prof.id, data=date(2026, 5, i + 11))
@@ -289,17 +291,18 @@ def test_approval_rule_fail_low_media(client, test_db, responsavel_user, respons
     test_db.commit()
 
     response = client.get(f"/responsavel/boletim?aluno_id={aluno.id}", headers=responsavel_headers)
-    assert response.json()[0]["aprovado"] is False
+    assert response.json()[0]["status"] == "reprovado"
 
 
 def test_approval_rule_fail_low_freq(client, test_db, responsavel_user, responsavel_headers):
-    """aprovado=False when freq_pct < 75%, even with good media (RESP-05)."""
+    """status='reprovado' when all 4 bimestres graded but freq_pct < 75% (RESP-05)."""
     resp, turma, disciplina, aluno, prof = _setup_responsavel_with_filho(test_db, responsavel_user)
 
-    av = Avaliacao(turma_id=turma.id, disciplina_id=disciplina.id, professor_id=prof.id, titulo="Prova", bimestre=1, valor_maximo=10.0)
-    test_db.add(av)
-    test_db.flush()
-    test_db.add(Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=9.0))  # good media
+    for bim in range(1, 5):
+        av = Avaliacao(turma_id=turma.id, disciplina_id=disciplina.id, professor_id=prof.id, titulo=f"Prova {bim}", bimestre=bim, valor_maximo=10.0)
+        test_db.add(av)
+        test_db.flush()
+        test_db.add(Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=9.0))  # good media
 
     # Only 1/4 present = 25%
     for i, presente in enumerate([True, False, False, False]):
@@ -310,16 +313,32 @@ def test_approval_rule_fail_low_freq(client, test_db, responsavel_user, responsa
     test_db.commit()
 
     response = client.get(f"/responsavel/boletim?aluno_id={aluno.id}", headers=responsavel_headers)
-    assert response.json()[0]["aprovado"] is False
+    assert response.json()[0]["status"] == "reprovado"
 
 
-def test_approval_false_when_no_data(client, test_db, responsavel_user, responsavel_headers):
-    """aprovado=False when both media and freq_pct are None (no data entered yet)."""
+def test_status_em_andamento_when_partial_bimestres(client, test_db, responsavel_user, responsavel_headers):
+    """status='em_andamento' when fewer than 4 bimestres are graded (RESP-05)."""
+    resp, turma, disciplina, aluno, prof = _setup_responsavel_with_filho(test_db, responsavel_user)
+
+    # Only bim1 and bim2 graded
+    for bim in [1, 2]:
+        av = Avaliacao(turma_id=turma.id, disciplina_id=disciplina.id, professor_id=prof.id, titulo=f"Prova {bim}", bimestre=bim, valor_maximo=10.0)
+        test_db.add(av)
+        test_db.flush()
+        test_db.add(Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=9.0))
+    test_db.commit()
+
+    response = client.get(f"/responsavel/boletim?aluno_id={aluno.id}", headers=responsavel_headers)
+    assert response.json()[0]["status"] == "em_andamento"
+
+
+def test_status_em_andamento_when_no_data(client, test_db, responsavel_user, responsavel_headers):
+    """status='em_andamento' when no notes entered yet (RESP-05)."""
     resp, turma, disciplina, aluno, prof = _setup_responsavel_with_filho(test_db, responsavel_user)
     test_db.commit()
 
     response = client.get(f"/responsavel/boletim?aluno_id={aluno.id}", headers=responsavel_headers)
-    assert response.json()[0]["aprovado"] is False
+    assert response.json()[0]["status"] == "em_andamento"
 
 
 # ---------------------------------------------------------------------------

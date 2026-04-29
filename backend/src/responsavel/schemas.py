@@ -21,4 +21,4 @@ class DisciplinaBoletimRow(BaseModel):
     total_aulas: int
     total_presentes: int
     freq_pct: Optional[float] = None
-    aprovado: bool
+    status: str  # "em_andamento" | "aprovado" | "reprovado"
