@@ -62,12 +62,19 @@ function useTurmaDisciplinas(turmaId: number) {
   })
 }
 
+interface ChamadaData {
+  id: number | null
+  data: string
+  presencas: { aluno_id: number; presente: boolean }[]
+}
+
 // Fetch existing chamada for a date
-function useChamada(turmaId: number, dateStr: string) {
-  return useQuery({
-    queryKey: ['chamada', turmaId, dateStr],
+function useChamada(turmaId: number, dateStr: string, disciplinaId: number) {
+  return useQuery<ChamadaData>({
+    queryKey: ['chamada', turmaId, dateStr, disciplinaId],
     queryFn: () =>
-      api.get(`/professor/turmas/${turmaId}/chamada?date=${dateStr}`).then((r) => r.data),
+      api.get(`/professor/turmas/${turmaId}/chamada?date=${dateStr}&disciplina_id=${disciplinaId}`).then((r) => r.data),
+    enabled: disciplinaId > 0,
   })
 }
 
@@ -78,7 +85,7 @@ function useSaveChamada(turmaId: number) {
     mutationFn: (body: { disciplina_id: number; data: string; presencas: PresencaState[] }) =>
       api.post(`/professor/turmas/${turmaId}/chamada`, body).then((r) => r.data),
     onSuccess: async (_data, variables) => {
-      await qc.invalidateQueries({ queryKey: ['chamada', turmaId, variables.data] })
+      await qc.invalidateQueries({ queryKey: ['chamada', turmaId, variables.data, variables.disciplina_id] })
       await qc.invalidateQueries({ queryKey: ['frequencia', turmaId] })
       toast.success('Chamada salva com sucesso.')
     },
@@ -92,7 +99,7 @@ export default function ProfessorTurmaPage() {
 
   const [activeTab, setActiveTab] = useState<Tab>('chamada')
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
+    new Date().toLocaleDateString('en-CA')
   )
   const [presencas, setPresencas] = useState<Record<number, boolean>>({})
   const [selectedDisciplinaId, setSelectedDisciplinaId] = useState<number>(0)
@@ -102,8 +109,6 @@ export default function ProfessorTurmaPage() {
   const { data: turmaInfo } = useTurmaInfo(turmaId)
   const { data: alunos } = useTurmaAlunos(turmaId)
   const { data: allDisciplinas } = useTurmaDisciplinas(turmaId)
-  const { data: chamadaData } = useChamada(turmaId, selectedDate)
-  const saveChamada = useSaveChamada(turmaId)
 
   // Disciplinas this professor teaches in this turma (already filtered by backend)
   const turmaDisciplinas: Disciplina[] = allDisciplinas ?? []
@@ -114,9 +119,11 @@ export default function ProfessorTurmaPage() {
       ? selectedDisciplinaId
       : (turmaDisciplinas[0]?.id ?? 0)
 
+  const { data: chamadaData } = useChamada(turmaId, selectedDate, effectiveDisciplinaId)
+  const saveChamada = useSaveChamada(turmaId)
+
   // Initialize presencas from chamadaData or default all-presente
   const effectivePresencas: Record<number, boolean> = (() => {
-    if (Object.keys(presencas).length > 0) return presencas
     const base: Record<number, boolean> = {}
     // If chamadaData has presencas, use those; otherwise all true
     if (chamadaData?.presencas?.length > 0) {
@@ -127,6 +134,10 @@ export default function ProfessorTurmaPage() {
       for (const a of alunos ?? []) {
         base[a.id] = true
       }
+    }
+    // Merge user edits on top of loaded state
+    for (const [alunoId, presente] of Object.entries(presencas)) {
+      base[Number(alunoId)] = presente
     }
     return base
   })()
