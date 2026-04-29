@@ -415,8 +415,9 @@ def create_responsavel(db: Session, body: schemas.ResponsavelCreate) -> Responsa
     # Link alunos — update responsavel_id FK on each aluno
     for aluno_id in body.aluno_ids:
         aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
-        if aluno:
-            aluno.responsavel_id = responsavel.id
+        if not aluno:
+            raise HTTPException(status_code=400, detail=f"Aluno {aluno_id} não encontrado")
+        aluno.responsavel_id = responsavel.id
     db.commit()
     db.refresh(responsavel)
     return responsavel
