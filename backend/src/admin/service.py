@@ -247,10 +247,6 @@ def _sync_professor_turma(db: Session, turma_id: int, rows: list) -> None:
     """Replace-all: delete all existing professor_turma rows for this turma, insert fresh."""
     db.query(ProfessorTurma).filter(ProfessorTurma.turma_id == turma_id).delete(synchronize_session=False)
     for row in rows:
-        if not db.query(Professor).filter(Professor.id == row.professor_id).first():
-            raise HTTPException(status_code=400, detail=f"Professor {row.professor_id} não encontrado")
-        if not db.query(Disciplina).filter(Disciplina.id == row.disciplina_id).first():
-            raise HTTPException(status_code=400, detail=f"Disciplina {row.disciplina_id} não encontrada")
         db.add(ProfessorTurma(
             turma_id=turma_id,
             disciplina_id=row.disciplina_id,
@@ -419,9 +415,8 @@ def create_responsavel(db: Session, body: schemas.ResponsavelCreate) -> Responsa
     # Link alunos — update responsavel_id FK on each aluno
     for aluno_id in body.aluno_ids:
         aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
-        if not aluno:
-            raise HTTPException(status_code=400, detail=f"Aluno {aluno_id} não encontrado")
-        aluno.responsavel_id = responsavel.id
+        if aluno:
+            aluno.responsavel_id = responsavel.id
     db.commit()
     db.refresh(responsavel)
     return responsavel
@@ -440,9 +435,8 @@ def update_responsavel(db: Session, resp_id: int, body: schemas.ResponsavelUpdat
         )
         for aluno_id in body.aluno_ids:
             aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
-            if not aluno:
-                raise HTTPException(status_code=400, detail=f"Aluno {aluno_id} não encontrado")
-            aluno.responsavel_id = resp_id
+            if aluno:
+                aluno.responsavel_id = resp_id
     db.commit()
     db.refresh(resp)
     return resp

@@ -6,7 +6,7 @@ All *Create/*Update schemas use default extra="ignore" (Pydantic v2 default).
 from __future__ import annotations
 from datetime import date
 from typing import List, Optional
-from pydantic import BaseModel, EmailStr, ConfigDict, Field
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 # ---------------------------------------------------------------------------
@@ -123,7 +123,7 @@ class PaginatedDisciplinas(BaseModel):
 class ProfessorCreate(BaseModel):
     nome: str
     email: EmailStr
-    senha: str = Field(..., min_length=8)
+    senha: str
     cpf: Optional[str] = None
 
 
@@ -155,7 +155,7 @@ class PaginatedProfessores(BaseModel):
 class ResponsavelCreate(BaseModel):
     nome: str
     email: EmailStr
-    senha: str = Field(..., min_length=8)
+    senha: str
     cpf: Optional[str] = None
     telefone: Optional[str] = None
     aluno_ids: List[int] = []

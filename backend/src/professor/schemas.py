@@ -38,7 +38,7 @@ class PresencaOut(BaseModel):
 
 class ChamadaOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id: Optional[int] = None
+    id: int
     data: date
     presencas: List[PresencaOut] = []
 
