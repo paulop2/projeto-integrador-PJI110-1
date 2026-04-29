@@ -55,12 +55,13 @@ def _assert_professor_owns_disciplina(db: Session, professor_id: int, turma_id: 
         raise HTTPException(status_code=403, detail="Acesso negado a esta disciplina")
 
 
-def _calcular_aprovado(db: Session, aluno_id: int, turma_id: int, disciplina_id: int) -> tuple:
-    """Returns (media, freq_pct, aprovado) for a given (aluno, turma, disciplina)."""
+def _calcular_status(db: Session, aluno_id: int, turma_id: int, disciplina_id: int) -> tuple:
+    """Returns (media, freq_pct, status) where status is 'em_andamento', 'aprovado', or 'reprovado'."""
     avaliacoes = db.query(Avaliacao).filter(
         Avaliacao.turma_id == turma_id,
         Avaliacao.disciplina_id == disciplina_id,
     ).all()
+    bimestres_lancados: set[int] = set()
     notas = []
     for av in avaliacoes:
         nota = db.query(Nota).filter(
@@ -69,6 +70,7 @@ def _calcular_aprovado(db: Session, aluno_id: int, turma_id: int, disciplina_id:
         ).first()
         if nota:
             notas.append(nota.valor)
+            bimestres_lancados.add(av.bimestre)
     media = sum(notas) / len(notas) if notas else None
 
     chamadas = db.query(Chamada).filter(
@@ -87,11 +89,15 @@ def _calcular_aprovado(db: Session, aluno_id: int, turma_id: int, disciplina_id:
         ).count()
         freq_pct = (presentes / total_chamadas) * 100.0
 
-    aprovado = (
-        media is not None and media >= 5.0
-        and freq_pct is not None and freq_pct >= 75.0
-    )
-    return media, freq_pct, aprovado
+    todos_bimestres = bimestres_lancados >= {1, 2, 3, 4}
+    if not todos_bimestres:
+        status = "em_andamento"
+    elif media is not None and media >= 5.0 and freq_pct is not None and freq_pct >= 75.0:
+        status = "aprovado"
+    else:
+        status = "reprovado"
+
+    return media, freq_pct, status
 
 
 def get_minhas_turmas(db: Session, current_user: Usuario) -> list:
@@ -127,7 +133,7 @@ def get_minhas_turmas(db: Session, current_user: Usuario) -> list:
         ).all()
         disc_ids = (
             db.query(ProfessorTurma.disciplina_id)
-            .filter(ProfessorTurma.turma_id == turma_id)
+            .filter(ProfessorTurma.turma_id == turma_id, ProfessorTurma.professor_id == prof.id)
             .distinct()
             .all()
         )
@@ -141,12 +147,12 @@ def get_minhas_turmas(db: Session, current_user: Usuario) -> list:
             if not disc_ids:
                 aprovado_em_todas = False
             for disc_id in disc_ids:
-                media, freq_pct, aprovado = _calcular_aprovado(
+                media, freq_pct, status = _calcular_status(
                     db, aluno.id, turma_id, disc_id
                 )
                 if media is not None:
                     all_medias.append(media)
-                if not aprovado:
+                if status != "aprovado":
                     aprovado_em_todas = False
             if aprovado_em_todas:
                 aprovados_count += 1

@@ -25,7 +25,7 @@ interface DisciplinaBoletimRow {
   total_aulas: number
   total_presentes: number
   freq_pct: number | null
-  aprovado: boolean
+  status: 'aprovado' | 'reprovado' | 'em_andamento'
 }
 
 function useMeusFilhos() {

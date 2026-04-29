@@ -320,20 +320,19 @@ def test_professor_minhas_turmas_with_metrics(client, test_db, professor_user, p
     """GET /professor/minhas-turmas includes media_geral and pct_aprovados."""
     prof, turma, disciplina, aluno = _setup_professor_with_turma(test_db, professor_user)
 
-    # Add avaliacao, nota, chamada, presenca
-    av = Avaliacao(
-        turma_id=turma.id,
-        disciplina_id=disciplina.id,
-        professor_id=prof.id,
-        bimestre=1,
-        titulo="AV1",
-        valor_maximo=10.0,
-    )
-    test_db.add(av)
-    test_db.flush()
-
-    nota = Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=8.0)
-    test_db.add(nota)
+    # All 4 bimestres graded at 8.0 — required for pct_aprovados to count the student
+    for bim in range(1, 5):
+        av = Avaliacao(
+            turma_id=turma.id,
+            disciplina_id=disciplina.id,
+            professor_id=prof.id,
+            bimestre=bim,
+            titulo=f"AV{bim}",
+            valor_maximo=10.0,
+        )
+        test_db.add(av)
+        test_db.flush()
+        test_db.add(Nota(avaliacao_id=av.id, aluno_id=aluno.id, valor=8.0))
 
     chamada = Chamada(
         turma_id=turma.id,
@@ -343,9 +342,7 @@ def test_professor_minhas_turmas_with_metrics(client, test_db, professor_user, p
     )
     test_db.add(chamada)
     test_db.flush()
-
-    presenca = Presenca(chamada_id=chamada.id, aluno_id=aluno.id, presente=True)
-    test_db.add(presenca)
+    test_db.add(Presenca(chamada_id=chamada.id, aluno_id=aluno.id, presente=True))
     test_db.commit()
 
     response = client.get("/professor/minhas-turmas", headers=professor_headers)

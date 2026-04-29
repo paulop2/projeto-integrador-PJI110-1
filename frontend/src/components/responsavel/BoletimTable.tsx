@@ -11,7 +11,7 @@ interface DisciplinaBoletimRow {
   total_aulas: number
   total_presentes: number
   freq_pct: number | null
-  aprovado: boolean
+  status: 'aprovado' | 'reprovado' | 'em_andamento'
 }
 
 interface BoletimTableProps {
@@ -92,7 +92,7 @@ export function BoletimTable({ rows }: BoletimTableProps) {
                     {freqDisplay}
                   </td>
                   <td className="px-3 py-2 text-center whitespace-nowrap">
-                    <StatusBadge aprovado={row.aprovado} />
+                    <StatusBadge status={row.status} />
                   </td>
                 </tr>
               )
