@@ -88,8 +88,11 @@ def get_boletim(db: Session, current_user: Usuario, aluno_id: int) -> list:
             Avaliacao.turma_id == aluno.turma_id,
             Avaliacao.disciplina_id == disc_id,
         ).all()
-        notas_por_bimestre: dict = {1: None, 2: None, 3: None, 4: None}
+        BIMESTRES = {1, 2, 3, 4}
+        notas_por_bimestre: dict = {b: None for b in BIMESTRES}
         for av in avaliacoes:
+            if av.bimestre not in BIMESTRES:
+                continue
             nota = db.query(Nota).filter(
                 Nota.avaliacao_id == av.id,
                 Nota.aluno_id == aluno.id,
