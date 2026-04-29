@@ -31,3 +31,9 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+
+if settings.ENVIRONMENT != "development" and settings.SECRET_KEY == "dev-secret-key-change-in-production":
+    raise RuntimeError(
+        "Weak default SECRET_KEY detected in non-development environment. "
+        "Set a strong SECRET_KEY via environment variable or .env file."
+    )
