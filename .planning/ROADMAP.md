@@ -165,7 +165,18 @@ Plans:
   2. Frontend React acessível em URL pública (Render static site ou Cloudflare Pages)
   3. Push para `master` dispara deploy automático via GitHub Actions
   4. Variáveis de ambiente (JWT secret, DATABASE_URL) configuradas via Render dashboard, não commitadas
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+**Wave 1**
+- [ ] 07-01-PLAN.md — Infrastructure artifacts: render.yaml, .github/workflows/deploy.yml, frontend/public/_redirects, backend/alembic/versions/0002_seed_demo.py (rich demo seed)
+
+**Wave 2** *(blocked on Wave 1; autonomous: false — manual platform setup)*
+- [ ] 07-02-PLAN.md — Live deploy verification: configure Render Web Service, configure Cloudflare Pages, set env vars, smoke-test admin/professor/responsável, prove auto-deploy via push
+
+Cross-cutting constraints:
+- No hardcoded URLs or secrets — all URLs and credentials injected via platform env vars (CORS_ORIGINS, VITE_API_URL, FRONTEND_URL, SECRET_KEY)
+- preDeployCommand not available on Render free tier — use compound startCommand: `bash -c "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port $PORT"` (D-07 superseded)
 
 ## Progress
 

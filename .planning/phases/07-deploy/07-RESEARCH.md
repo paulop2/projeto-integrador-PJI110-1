@@ -521,17 +521,17 @@ def downgrade() -> None:
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Whether render.yaml is used vs. manual dashboard configuration**
    - What we know: Both work. `render.yaml` at repo root enables "Connect via Blueprint"; manual dashboard setup also works.
    - What's unclear: D-07 mentions `preDeployCommand` but this is unavailable on free tier — the plan must use the compound startCommand approach instead.
-   - Recommendation: Create `render.yaml` for documentation value (IaC as evidence for report) but use compound startCommand instead of preDeployCommand.
+   - **RESOLVED:** Create `render.yaml` for documentation value (IaC as evidence for report) but use compound startCommand instead of preDeployCommand. Plan 01 implements this — `render.yaml` ships at repo root with compound startCommand, and the D-07 deviation is documented in the SUMMARY.
 
 2. **CORS_ORIGINS format validation**
    - What we know: `config.py` declares `CORS_ORIGINS: list[str]`. Pydantic-settings parses JSON strings from environment variables. Set as `["https://escola-pi.pages.dev"]` in Render dashboard.
    - What's unclear: Whether the Render dashboard accepts multi-line JSON or if the JSON must be on a single line.
-   - Recommendation: Use single-line JSON array string in Render dashboard: `["https://projeto.pages.dev"]`.
+   - **RESOLVED:** Use single-line JSON array string in Render dashboard: `["https://projeto.pages.dev"]`. Plan 02 Task 4 enforces this exact format and the SUMMARY records the value used.
 
 ---
 
