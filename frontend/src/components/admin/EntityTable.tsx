@@ -5,7 +5,7 @@ interface Column {
   label: string
 }
 
-interface EntityTableProps<T = Record<string, unknown>> {
+interface EntityTableProps<T> {
   columns: Column[]
   rows: T[]
   total: number
@@ -21,7 +21,7 @@ interface EntityTableProps<T = Record<string, unknown>> {
   newLabel?: string
 }
 
-export function EntityTable<T = Record<string, unknown>>({
+export function EntityTable<T>({
   columns,
   rows,
   total,
@@ -81,41 +81,44 @@ export function EntityTable<T = Record<string, unknown>>({
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {rows.map((row, i) => (
-                <tr key={(row.id as number) ?? i} className="hover:bg-gray-50">
-                  {columns.map((col) => (
-                    <td key={col.key} className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
-                      {col.key === 'ativo' ? (
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                            row[col.key] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}
+              {rows.map((row, i) => {
+                const r = row as Record<string, unknown> & { id?: number; ativo?: boolean }
+                return (
+                  <tr key={r.id ?? i} className="hover:bg-gray-50">
+                    {columns.map((col) => (
+                      <td key={col.key} className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                        {col.key === 'ativo' ? (
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                              r.ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}
+                          >
+                            {r.ativo ? 'Ativo' : 'Inativo'}
+                          </span>
+                        ) : (
+                          String(r[col.key] ?? '—')
+                        )}
+                      </td>
+                    ))}
+                    <td className="px-4 py-3 text-right whitespace-nowrap space-x-2">
+                      <button
+                        onClick={() => onEdit(row)}
+                        className="text-xs font-medium text-indigo-600 hover:text-indigo-800"
+                      >
+                        Editar
+                      </button>
+                      {onDeactivate && (r.ativo === true || r.ativo === undefined) && (
+                        <button
+                          onClick={() => onDeactivate(row)}
+                          className="text-xs font-medium text-red-600 hover:text-red-800"
                         >
-                          {row[col.key] ? 'Ativo' : 'Inativo'}
-                        </span>
-                      ) : (
-                        String(row[col.key] ?? '—')
+                          Desativar
+                        </button>
                       )}
                     </td>
-                  ))}
-                  <td className="px-4 py-3 text-right whitespace-nowrap space-x-2">
-                    <button
-                      onClick={() => onEdit(row)}
-                      className="text-xs font-medium text-indigo-600 hover:text-indigo-800"
-                    >
-                      Editar
-                    </button>
-                    {onDeactivate && (row.ativo === true || row.ativo === undefined) && (
-                      <button
-                        onClick={() => onDeactivate(row)}
-                        className="text-xs font-medium text-red-600 hover:text-red-800"
-                      >
-                        Desativar
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

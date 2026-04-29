@@ -13,6 +13,9 @@ frontend/node_modules/
 frontend/dist/
 frontend/.env.local
 
+# Root env
+.env
+
 # IDE
 .vscode/
 .idea/

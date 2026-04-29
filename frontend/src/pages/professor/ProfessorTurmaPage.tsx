@@ -126,8 +126,8 @@ export default function ProfessorTurmaPage() {
   const effectivePresencas: Record<number, boolean> = (() => {
     const base: Record<number, boolean> = {}
     // If chamadaData has presencas, use those; otherwise all true
-    if (chamadaData?.presencas?.length > 0) {
-      for (const p of chamadaData.presencas) {
+    if ((chamadaData?.presencas?.length ?? 0) > 0) {
+      for (const p of chamadaData!.presencas) {
         base[p.aluno_id] = p.presente
       }
     } else {
