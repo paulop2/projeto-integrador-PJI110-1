@@ -51,13 +51,15 @@ def run_migrations_online() -> None:
             render_as_batch=True,  # CRÍTICO: suporte a ALTER TABLE no SQLite
             naming_convention=NAMING_CONVENTION,
         )
-        with context.begin_transaction():
-            context.run_migrations()
-        # CRÍTICO: commit explícito necessário no SQLAlchemy 2.0 + SQLite
-        # para persistir DML (INSERT, alembic_version) após DDL implícito commit
-        connection.commit()
-        # Reabilitar FK enforcement após migration
-        connection.execute(text("PRAGMA foreign_keys=ON"))
+        try:
+            with context.begin_transaction():
+                context.run_migrations()
+            # CRÍTICO: commit explícito necessário no SQLAlchemy 2.0 + SQLite
+            # para persistir DML (INSERT, alembic_version) após DDL implícito commit
+            connection.commit()
+        finally:
+            # Reabilitar FK enforcement após migration
+            connection.execute(text("PRAGMA foreign_keys=ON"))
 
 
 if context.is_offline_mode():
