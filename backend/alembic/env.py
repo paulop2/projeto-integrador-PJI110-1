@@ -1,3 +1,4 @@
+import os
 import sys
 from logging.config import fileConfig
 
@@ -5,7 +6,7 @@ from alembic import context
 from sqlalchemy import text
 
 # Adicionar backend/src ao path para imports funcionarem
-sys.path.insert(0, ".")
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.database import Base, engine  # noqa: E402
 import src.models  # noqa: F401, E402 — importar todos os models para Alembic detectar
