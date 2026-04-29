@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
+import { useAuth } from '../../contexts/AuthContext'
 import { api } from '../../services/api'
-import { StatusBadge } from '../../components/responsavel/StatusBadge'
-import { SkeletonTable } from '../../components/SkeletonTable'
 
 interface DashboardCounts {
   alunos: number
@@ -9,13 +8,6 @@ interface DashboardCounts {
   disciplinas: number
   professores: number
   responsaveis: number
-}
-
-function useAdminDashboard() {
-  return useQuery<DashboardCounts>({
-    queryKey: ['admin-dashboard'],
-    queryFn: () => api.get('/admin/dashboard').then((r) => r.data),
-  })
 }
 
 interface TurmaDesempenho {
@@ -31,109 +23,216 @@ interface DashboardDesempenho {
   turmas: TurmaDesempenho[]
 }
 
-function useAdminDesempenho() {
-  return useQuery<DashboardDesempenho>({
-    queryKey: ['admin-desempenho'],
-    queryFn: () => api.get('/admin/dashboard/desempenho').then((r) => r.data),
-  })
-}
-
-const countCards = [
-  { key: 'alunos' as const, label: 'Alunos', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  { key: 'turmas' as const, label: 'Turmas', color: 'bg-green-50 text-green-700 border-green-200' },
-  { key: 'disciplinas' as const, label: 'Disciplinas', color: 'bg-purple-50 text-purple-700 border-purple-200' },
-  { key: 'professores' as const, label: 'Professores', color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
-  { key: 'responsaveis' as const, label: 'Responsáveis', color: 'bg-pink-50 text-pink-700 border-pink-200' },
+const cardConfig = [
+  {
+    key: 'alunos' as const,
+    label: 'Alunos',
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-600',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  {
+    key: 'turmas' as const,
+    label: 'Turmas',
+    bg: 'bg-violet-50',
+    text: 'text-violet-600',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    ),
+  },
+  {
+    key: 'disciplinas' as const,
+    label: 'Disciplinas',
+    bg: 'bg-sky-50',
+    text: 'text-sky-600',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    ),
+  },
+  {
+    key: 'professores' as const,
+    label: 'Professores',
+    bg: 'bg-amber-50',
+    text: 'text-amber-600',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M20 21a8 8 0 1 0-16 0" />
+      </svg>
+    ),
+  },
+  {
+    key: 'responsaveis' as const,
+    label: 'Responsáveis',
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-600',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="3" />
+        <circle cx="15" cy="7" r="3" />
+      </svg>
+    ),
+  },
 ]
 
 export default function AdminDashboard() {
-  const { data, isLoading, isError } = useAdminDashboard()
-  const { data: desempenho, isLoading: desempenhoLoading } = useAdminDesempenho()
+  const { user } = useAuth()
+
+  const { data: counts, isLoading, isError } = useQuery<DashboardCounts>({
+    queryKey: ['admin-dashboard'],
+    queryFn: () => api.get('/admin/dashboard').then((r) => r.data),
+  })
+
+  const { data: desempenho, isLoading: desempenhoLoading } = useQuery<DashboardDesempenho>({
+    queryKey: ['admin-desempenho'],
+    queryFn: () => api.get('/admin/dashboard/desempenho').then((r) => r.data),
+  })
+
+  const hora = new Date().getHours()
+  const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite'
+  const primeiroNome = user?.nome?.split(' ')[0] ?? 'Admin'
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-2">Dashboard</h1>
-      <p className="text-sm text-gray-500 mb-8">Visão geral da estrutura escolar</p>
+    <div className="p-8 max-w-5xl">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">
+          {saudacao}, {primeiroNome}
+        </h1>
+        <p className="text-sm text-gray-500 mt-1">Visão geral da escola para {new Date().getFullYear()}.</p>
+      </div>
 
       {isError && (
-        <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-md border border-red-200">
+        <div className="mb-6 p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-200">
           Erro ao carregar dados. Verifique se o backend está rodando.
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {countCards.map(({ key, label, color }) => (
-          <div
-            key={key}
-            className={`rounded-lg border p-4 ${color}`}
-          >
-            <p className="text-3xl font-bold">
-              {isLoading ? '—' : (data?.[key] ?? 0)}
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
+        {cardConfig.map(({ key, label, bg, text, icon }) => (
+          <div key={key} className="bg-white rounded-xl border border-gray-200 p-5">
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${bg} ${text}`}>
+              {icon}
+            </div>
+            <p className="text-2xl font-bold text-gray-900 leading-tight">
+              {isLoading
+                ? <span className="inline-block w-8 h-6 bg-gray-100 rounded animate-pulse align-middle" />
+                : (counts?.[key] ?? 0)}
             </p>
-            <p className="text-sm font-medium mt-1">{label}</p>
+            <p className="text-xs text-gray-500 mt-0.5 font-medium">{label}</p>
           </div>
         ))}
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-900 mt-8 mb-4">Desempenho por Turma</h2>
-
-      {desempenhoLoading ? (
-        <SkeletonTable rows={5} columns={5} />
-      ) : desempenho ? (
-        <div>
-          {desempenho.alunos_em_risco === 0 ? (
-            <div className="mb-4 p-4 rounded-lg border bg-green-50 border-green-200 flex items-start gap-3">
-              <svg className="w-5 h-5 text-green-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+      {/* Desempenho */}
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-gray-900">Desempenho por Turma</h2>
+          {desempenho && desempenho.alunos_em_risco > 0 && (
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
-              <div>
-                <p className="text-sm font-medium text-green-800">Nenhum aluno em risco de reprovação</p>
-              </div>
-            </div>
-          ) : (
-            <div className="mb-4 p-4 rounded-lg border bg-yellow-50 border-yellow-200 flex items-start gap-3">
-              <svg className="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <div>
-                <p className="text-sm font-medium text-yellow-800">{desempenho.alunos_em_risco} aluno(s) em risco de reprovação</p>
-                <p className="text-xs text-yellow-700 mt-1">Média inferior a 5,0 ou frequência abaixo de 75% em pelo menos uma disciplina.</p>
-              </div>
-            </div>
+              {desempenho.alunos_em_risco} em risco
+            </span>
           )}
-
-          {desempenho.turmas.length === 0 ? (
-            <p className="text-sm text-gray-500">Nenhuma turma cadastrada.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Turma</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alunos</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Média Geral</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">% Aprovados</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {desempenho.turmas.map((turma) => (
-                    <tr key={turma.turma_id}>
-                      <td className="px-4 py-3 text-sm text-gray-900">{turma.turma_nome}</td>
-                      <td className="px-4 py-3 text-sm text-gray-500">{turma.num_alunos}</td>
-                      <td className="px-4 py-3 text-sm text-gray-500">{turma.media_geral?.toFixed(1) ?? '—'}</td>
-                      <td className="px-4 py-3 text-sm text-gray-500">{turma.pct_aprovados?.toFixed(0) ?? '—'}%</td>
-                      <td className="px-4 py-3">
-                        <StatusBadge aprovado={(turma.pct_aprovados ?? 0) >= 60} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          {desempenho && desempenho.alunos_em_risco === 0 && (
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2.5 py-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              Sem alunos em risco
+            </span>
           )}
         </div>
-      ) : null}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-100">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Turma</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Alunos</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Média Geral</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">% Aprovados</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Situação</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {desempenhoLoading
+                ? [1, 2, 3].map((i) => (
+                    <tr key={i}>
+                      {[1, 2, 3, 4, 5].map((j) => (
+                        <td key={j} className="px-6 py-3">
+                          <div className="h-4 bg-gray-100 rounded animate-pulse w-14" />
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                : desempenho?.turmas.length === 0
+                ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-10 text-center text-gray-400 text-sm">
+                      Nenhuma turma com dados de desempenho.
+                    </td>
+                  </tr>
+                )
+                : desempenho?.turmas.map((t) => {
+                    const pct = t.pct_aprovados ?? null
+                    const media = t.media_geral ?? null
+                    const ok = pct !== null && pct >= 60
+                    return (
+                      <tr key={t.turma_id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-3 font-medium text-gray-900">{t.turma_nome}</td>
+                        <td className="px-6 py-3 text-gray-600">{t.num_alunos}</td>
+                        <td className="px-6 py-3">
+                          {media !== null ? (
+                            <span className={`font-semibold ${media >= 5 ? 'text-gray-900' : 'text-red-600'}`}>
+                              {media.toFixed(1)}
+                            </span>
+                          ) : <span className="text-gray-400">—</span>}
+                        </td>
+                        <td className="px-6 py-3">
+                          {pct !== null
+                            ? <span className={`font-semibold ${pct >= 60 ? 'text-gray-900' : 'text-red-600'}`}>{pct.toFixed(0)}%</span>
+                            : <span className="text-gray-400">—</span>}
+                        </td>
+                        <td className="px-6 py-3">
+                          {pct === null ? (
+                            <span className="text-gray-400 text-xs">sem dados</span>
+                          ) : ok ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
+                              Regular
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-700">
+                              Atenção
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   )
 }
