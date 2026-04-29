@@ -5,6 +5,7 @@ Security:
 - professor_required = Depends(require_role("professor")) applied to every endpoint
 - Ownership check via _assert_professor_owns_turma on all turma-specific endpoints
 """
+from datetime import date
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
@@ -46,11 +47,12 @@ def get_turma_disciplinas(
 @router.get("/turmas/{turma_id}/chamada")
 def get_chamada(
     turma_id: int,
-    date: str = Query(...),
+    date: date = Query(...),
+    disciplina_id: int = Query(...),
     db: Session = Depends(get_db),
     current_user: Usuario = professor_required,
 ):
-    return service.get_chamada(db, current_user, turma_id, date)
+    return service.get_chamada(db, current_user, turma_id, date, disciplina_id)
 
 
 @router.post("/turmas/{turma_id}/chamada", status_code=200)
