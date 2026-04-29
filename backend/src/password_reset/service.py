@@ -3,6 +3,7 @@ import smtplib
 from datetime import datetime, timedelta, timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from smtplib import SMTPException
 
 from sqlalchemy.orm import Session
 
@@ -58,10 +59,13 @@ def send_reset_email(to_email: str, token: str) -> None:
     part = MIMEText(body, "plain", "utf-8")
     msg.attach(part)
 
-    with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
-        server.starttls()
-        server.login(settings.SMTP_USER, settings.SMTP_PASS)
-        server.sendmail(settings.SMTP_SENDER, to_email, msg.as_string())
+    try:
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=10) as server:
+            server.starttls()
+            server.login(settings.SMTP_USER, settings.SMTP_PASS)
+            server.sendmail(settings.SMTP_SENDER, to_email, msg.as_string())
+    except SMTPException as exc:
+        raise RuntimeError(f"Failed to send reset email: {exc}") from exc
 
 
 def validate_and_consume_token(db: Session, token: str) -> Usuario | None:
