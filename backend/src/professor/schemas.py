@@ -74,3 +74,17 @@ class FrequenciaRow(BaseModel):
     total_aulas: int
     total_presentes: int
     percentual: float
+
+
+# --- Aluno / Disciplina helper schemas ---
+
+class AlunoOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    nome: str
+
+
+class DisciplinaOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    nome: str

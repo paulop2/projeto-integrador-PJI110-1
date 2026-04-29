@@ -25,6 +25,24 @@ def get_minhas_turmas(
     return service.get_minhas_turmas(db, current_user)
 
 
+@router.get("/turmas/{turma_id}/alunos", response_model=list[schemas.AlunoOut])
+def get_turma_alunos(
+    turma_id: int,
+    db: Session = Depends(get_db),
+    current_user: Usuario = professor_required,
+):
+    return service.get_turma_alunos(db, current_user, turma_id)
+
+
+@router.get("/turmas/{turma_id}/disciplinas", response_model=list[schemas.DisciplinaOut])
+def get_turma_disciplinas(
+    turma_id: int,
+    db: Session = Depends(get_db),
+    current_user: Usuario = professor_required,
+):
+    return service.get_turma_disciplinas(db, current_user, turma_id)
+
+
 @router.get("/turmas/{turma_id}/chamada")
 def get_chamada(
     turma_id: int,
