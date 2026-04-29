@@ -72,7 +72,9 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setLoginError('')
-    const ok = validateEmail() & +validateSenha()
+    const emailOk = validateEmail()
+    const senhaOk = validateSenha()
+    const ok = emailOk && senhaOk
     if (ok) mutation.mutate({ email, senha })
   }
 
