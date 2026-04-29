@@ -436,8 +436,9 @@ def update_responsavel(db: Session, resp_id: int, body: schemas.ResponsavelUpdat
         )
         for aluno_id in body.aluno_ids:
             aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
-            if aluno:
-                aluno.responsavel_id = resp_id
+            if not aluno:
+                raise HTTPException(status_code=400, detail=f"Aluno {aluno_id} não encontrado")
+            aluno.responsavel_id = resp_id
     db.commit()
     db.refresh(resp)
     return resp
