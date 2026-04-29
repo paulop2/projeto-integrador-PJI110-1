@@ -1,7 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { api } from '../../services/api'
+
+interface NotasData {
+  aluno_id: number
+  nome: string
+  notas: { bimestre: number; valor: number }[]
+}
 
 interface GradeTableProps {
   turmaId: number
@@ -11,17 +17,19 @@ interface GradeTableProps {
 export function GradeTable({ turmaId, disciplinaId }: GradeTableProps) {
   const qc = useQueryClient()
   const [grades, setGrades] = useState<Record<string, string>>({})
+  const initializedRef = useRef(false)
 
-  const { data: notasData, isLoading } = useQuery({
+  const { data: notasData, isLoading } = useQuery<NotasData[]>({
     queryKey: ['notas', turmaId, disciplinaId],
     queryFn: () =>
       api.get(`/professor/turmas/${turmaId}/notas?disciplina_id=${disciplinaId}`).then((r) => r.data),
     enabled: disciplinaId > 0,
   })
 
-  // Populate grades state when data loads
+  // Populate grades state when data loads (only once per disciplina)
   useEffect(() => {
     if (!notasData) return
+    if (initializedRef.current) return
     const initial: Record<string, string> = {}
     for (const row of notasData) {
       for (const n of row.notas ?? []) {
@@ -29,7 +37,12 @@ export function GradeTable({ turmaId, disciplinaId }: GradeTableProps) {
       }
     }
     setGrades(initial)
+    initializedRef.current = true
   }, [notasData])
+
+  useEffect(() => {
+    initializedRef.current = false
+  }, [disciplinaId])
 
   const saveMutation = useMutation({
     mutationFn: (payload: { disciplina_id: number; grades: { aluno_id: number; bimestre: number; valor: number }[] }) =>
@@ -52,8 +65,8 @@ export function GradeTable({ turmaId, disciplinaId }: GradeTableProps) {
     return isNaN(num) || num < 0 || num > 10
   }
 
-  const hasErrors = notasData?.some((_: unknown, idx: number) =>
-    [1, 2, 3, 4].some((b) => isInvalid(notasData[idx].aluno_id, b))
+  const hasErrors = notasData?.some((row) =>
+    [1, 2, 3, 4].some((b) => isInvalid(row.aluno_id, b))
   ) ?? false
 
   const handleSave = () => {
@@ -100,7 +113,7 @@ export function GradeTable({ turmaId, disciplinaId }: GradeTableProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {notasData.map((row: { aluno_id: number; nome: string; notas: unknown[] }) => (
+            {notasData.map((row) => (
               <tr key={row.aluno_id} className="hover:bg-gray-50">
                 <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
                   {row.nome}
