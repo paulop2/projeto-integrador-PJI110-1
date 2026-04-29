@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 from sqlalchemy import ForeignKey, String, Boolean, DateTime
@@ -23,7 +23,7 @@ class Usuario(Base):
     tipo: Mapped[TipoUsuario] = mapped_column(nullable=False)
     ativo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     criado_em: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.utcnow
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
     )
 
     reset_tokens: Mapped[List["ResetToken"]] = relationship(
@@ -42,7 +42,7 @@ class ResetToken(Base):
     expira_em: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     usado: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     criado_em: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.utcnow
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
     )
 
     usuario: Mapped["Usuario"] = relationship("Usuario", back_populates="reset_tokens")
