@@ -33,7 +33,6 @@ function useCreateDisciplina() {
   return useMutation({
     mutationFn: (body: DisciplinaFormData) => api.post('/admin/disciplinas', body).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['disciplinas'] }); toast.success('Disciplina criada com sucesso') },
-    onError: () => toast.error('Erro ao criar disciplina'),
   })
 }
 
@@ -43,7 +42,6 @@ function useUpdateDisciplina() {
     mutationFn: ({ id, body }: { id: number; body: DisciplinaFormData }) =>
       api.put(`/admin/disciplinas/${id}`, body).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['disciplinas'] }); toast.success('Disciplina atualizada') },
-    onError: () => toast.error('Erro ao atualizar disciplina'),
   })
 }
 
@@ -64,8 +62,9 @@ function DisciplinaModal({ open, onClose, initial }: DisciplinaModalProps) {
   })
 
   useEffect(() => {
+    if (!open) return
     reset(initial ? { nome: initial.nome, carga_horaria: initial.carga_horaria ?? null } : { nome: '', carga_horaria: null })
-  }, [initial, reset, open])
+  }, [initial, reset])
 
   const onSubmit = (data: DisciplinaFormData) => {
     if (isEdit && initial) {
@@ -112,14 +111,14 @@ export default function DisciplinasPage() {
   const { data, isLoading } = useDisciplinas(page, search)
 
   const openCreate = () => { setSelected(null); setModalOpen(true) }
-  const openEdit = (row: Record<string, unknown>) => { setSelected(row as unknown as DisciplinaOut); setModalOpen(true) }
+  const openEdit = (row: DisciplinaOut) => { setSelected(row); setModalOpen(true) }
 
   return (
     <div className="p-8">
       <h1 className="text-2xl font-semibold text-gray-900 mb-6">Disciplinas</h1>
-      <EntityTable
+      <EntityTable<DisciplinaOut>
         columns={COLUMNS}
-        rows={(data?.items ?? []) as Record<string, unknown>[]}
+        rows={(data?.items ?? []) as DisciplinaOut[]}
         total={data?.total ?? 0}
         page={page}
         perPage={25}
@@ -127,7 +126,6 @@ export default function DisciplinasPage() {
         onPageChange={setPage}
         onSearch={(q) => { setSearch(q); setPage(1) }}
         onEdit={openEdit}
-        onDeactivate={() => {}}
         isLoading={isLoading}
         onNew={openCreate}
         newLabel="Nova Disciplina"

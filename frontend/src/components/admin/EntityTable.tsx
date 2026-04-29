@@ -5,23 +5,23 @@ interface Column {
   label: string
 }
 
-interface EntityTableProps {
+interface EntityTableProps<T = Record<string, unknown>> {
   columns: Column[]
-  rows: Record<string, unknown>[]
+  rows: T[]
   total: number
   page: number
   perPage: number
   search: string
   onPageChange: (page: number) => void
   onSearch: (q: string) => void
-  onEdit: (row: Record<string, unknown>) => void
-  onDeactivate: (row: Record<string, unknown>) => void
+  onEdit: (row: T) => void
+  onDeactivate?: (row: T) => void
   isLoading?: boolean
   onNew?: () => void
   newLabel?: string
 }
 
-export function EntityTable({
+export function EntityTable<T = Record<string, unknown>>({
   columns,
   rows,
   total,
@@ -35,7 +35,7 @@ export function EntityTable({
   isLoading,
   onNew,
   newLabel = 'Novo',
-}: EntityTableProps) {
+}: EntityTableProps<T>) {
   const totalPages = Math.ceil(total / perPage)
 
   return (
@@ -105,7 +105,7 @@ export function EntityTable({
                     >
                       Editar
                     </button>
-                    {(row.ativo === true || row.ativo === undefined) && (
+                    {onDeactivate && (row.ativo === true || row.ativo === undefined) && (
                       <button
                         onClick={() => onDeactivate(row)}
                         className="text-xs font-medium text-red-600 hover:text-red-800"

@@ -43,10 +43,6 @@ function useCreateProfessor() {
   return useMutation({
     mutationFn: (body: ProfessorCreateData) => api.post('/admin/professores', body).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['professores'] }); await qc.invalidateQueries({ queryKey: ['professores-select'] }); toast.success('Professor criado com sucesso') },
-    onError: (e: unknown) => {
-      const msg = (e as { response?: { data?: { detail?: string } } })?.response?.data?.detail
-      toast.error(msg ?? 'Erro ao criar professor')
-    },
   })
 }
 
@@ -56,7 +52,6 @@ function useUpdateProfessor() {
     mutationFn: ({ id, body }: { id: number; body: ProfessorUpdateData }) =>
       api.put(`/admin/professores/${id}`, body).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['professores'] }); await qc.invalidateQueries({ queryKey: ['professores-select'] }); toast.success('Professor atualizado') },
-    onError: () => toast.error('Erro ao atualizar professor'),
   })
 }
 
@@ -65,7 +60,6 @@ function useDeactivateProfessor() {
   return useMutation({
     mutationFn: (id: number) => api.post(`/admin/professores/${id}/deactivate`).then((r) => r.data),
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['professores'] }); toast.success('Professor desativado') },
-    onError: () => toast.error('Erro ao desativar professor'),
   })
 }
 
@@ -86,11 +80,12 @@ function ProfessorModal({ open, onClose, initial }: ProfessorModalProps) {
   })
 
   useEffect(() => {
+    if (!open) return
     reset(
       initial ? { nome: initial.nome, email: initial.email ?? '', senha: '', cpf: initial.cpf ?? null }
                : { nome: '', email: '', senha: '', cpf: null }
     )
-  }, [initial, reset, open])
+  }, [initial, reset])
 
   const onSubmit = (data: ProfessorCreateData) => {
     if (isEdit && initial) {
@@ -157,17 +152,17 @@ export default function ProfessoresPage() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-semibold text-gray-900 mb-6">Professores</h1>
-      <EntityTable
+      <EntityTable<ProfessorOut>
         columns={COLUMNS}
-        rows={(data?.items ?? []) as Record<string, unknown>[]}
+        rows={(data?.items ?? []) as ProfessorOut[]}
         total={data?.total ?? 0}
         page={page}
         perPage={25}
         search={search}
         onPageChange={setPage}
         onSearch={(q) => { setSearch(q); setPage(1) }}
-        onEdit={(row) => { setSelected(row as unknown as ProfessorOut); setModalOpen(true) }}
-        onDeactivate={(row) => { setToDeactivate(row as unknown as ProfessorOut); setConfirmOpen(true) }}
+        onEdit={(row) => { setSelected(row); setModalOpen(true) }}
+        onDeactivate={(row) => { setToDeactivate(row); setConfirmOpen(true) }}
         isLoading={isLoading}
         onNew={() => { setSelected(null); setModalOpen(true) }}
         newLabel="Novo Professor"
