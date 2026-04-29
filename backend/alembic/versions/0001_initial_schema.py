@@ -339,6 +339,22 @@ def upgrade() -> None:
     op.create_index("ix_notas_avaliacao_id", "notas", ["avaliacao_id"])
     op.create_index("ix_notas_aluno_id", "notas", ["aluno_id"])
 
+    # -------------------------------------------------------------------------
+    # SEED: Usuário admin padrão de desenvolvimento
+    # Hash pré-computado para "Admin@123" com bcrypt cost=12
+    # -------------------------------------------------------------------------
+    op.execute(
+        """
+        INSERT INTO usuarios (email, senha_hash, tipo, ativo)
+        VALUES (
+            'admin@escola.dev',
+            '$2b$12$1mKwUZ5aHQg.DHcmI0KbcuTVrXlC15/dZ6s4SOmUpj/p82q1jeKEe',
+            'admin',
+            1
+        )
+        """
+    )
+
 
 def downgrade() -> None:
     op.drop_table("notas")
