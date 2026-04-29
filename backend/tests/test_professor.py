@@ -75,7 +75,7 @@ def test_ownership_check(client, test_db, professor_user, professor_headers):
     test_db.commit()
 
     response = client.get(
-        f"/professor/turmas/{turma.id}/chamada?date=2026-04-27",
+        f"/professor/turmas/{turma.id}/chamada?date=2026-04-27&disciplina_id=1",
         headers=professor_headers,
     )
     assert response.status_code == 403
