@@ -9,9 +9,8 @@ Patterns:
 - professor_turma: replace-all strategy (delete existing + insert fresh)
 - Matricula generation: MAT{year}{id:05d} — generated after db.flush()
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func
 from fastapi import HTTPException
 
 from src.models.usuario import Usuario, TipoUsuario
@@ -111,17 +110,18 @@ def get_dashboard_desempenho(db: Session) -> dict:
         all_medias = []
 
         for aluno in alunos:
-            aprovado_em_todas = True
             if not disciplina_ids:
-                aprovado_em_todas = False
-            for disc_id in disciplina_ids:
-                media, freq_pct, aprovado = _calcular_media_freq_aprovado(
-                    db, aluno.id, turma.id, disc_id
-                )
-                if media is not None:
-                    all_medias.append(media)
-                if not aprovado:
-                    aprovado_em_todas = False
+                aprovado_em_todas = True
+            else:
+                aprovado_em_todas = True
+                for disc_id in disciplina_ids:
+                    media, freq_pct, aprovado = _calcular_media_freq_aprovado(
+                        db, aluno.id, turma.id, disc_id
+                    )
+                    if media is not None:
+                        all_medias.append(media)
+                    if not aprovado:
+                        aprovado_em_todas = False
             if aprovado_em_todas:
                 aprovados_count += 1
             else:
@@ -172,6 +172,12 @@ def list_alunos(db: Session, page: int, per_page: int, search: str) -> dict:
 
 
 def create_aluno(db: Session, body: schemas.AlunoCreate) -> Aluno:
+    if body.turma_id is not None:
+        if not db.query(Turma).filter(Turma.id == body.turma_id).first():
+            raise HTTPException(status_code=400, detail="Turma não encontrada")
+    if body.responsavel_id is not None:
+        if not db.query(Responsavel).filter(Responsavel.id == body.responsavel_id).first():
+            raise HTTPException(status_code=400, detail="Responsável não encontrado")
     aluno = Aluno(
         nome=body.nome,
         data_nascimento=body.data_nascimento,
@@ -181,7 +187,7 @@ def create_aluno(db: Session, body: schemas.AlunoCreate) -> Aluno:
     )
     db.add(aluno)
     db.flush()  # assigns aluno.id before commit
-    aluno.matricula = _generate_matricula(datetime.utcnow().year, aluno.id)
+    aluno.matricula = _generate_matricula(datetime.now(timezone.utc).year, aluno.id)
     db.commit()
     db.refresh(aluno)
     return aluno
@@ -191,7 +197,14 @@ def update_aluno(db: Session, aluno_id: int, body: schemas.AlunoUpdate) -> Aluno
     aluno = db.query(Aluno).filter(Aluno.id == aluno_id).first()
     if not aluno:
         raise HTTPException(status_code=404, detail="Aluno não encontrado")
-    for field, value in body.model_dump(exclude_unset=True).items():
+    data = body.model_dump(exclude_unset=True)
+    if data.get("turma_id") is not None:
+        if not db.query(Turma).filter(Turma.id == data["turma_id"]).first():
+            raise HTTPException(status_code=400, detail="Turma não encontrada")
+    if data.get("responsavel_id") is not None:
+        if not db.query(Responsavel).filter(Responsavel.id == data["responsavel_id"]).first():
+            raise HTTPException(status_code=400, detail="Responsável não encontrado")
+    for field, value in data.items():
         setattr(aluno, field, value)
     db.commit()
     db.refresh(aluno)
@@ -218,7 +231,16 @@ def list_turmas(db: Session, page: int, per_page: int, search: str) -> dict:
         q = q.filter(Turma.nome.ilike(f"%{search}%"))
     total = q.count()
     items = q.order_by(Turma.nome).offset((page - 1) * per_page).limit(per_page).all()
-    return {"items": items, "total": total, "page": page, "per_page": per_page}
+    result = []
+    for turma in items:
+        out = schemas.TurmaOut.model_validate(turma)
+        pt_rows = db.query(ProfessorTurma).filter(ProfessorTurma.turma_id == turma.id).all()
+        out.professor_turma = [
+            schemas.ProfessorTurmaRow(disciplina_id=r.disciplina_id, professor_id=r.professor_id)
+            for r in pt_rows
+        ]
+        result.append(out)
+    return {"items": result, "total": total, "page": page, "per_page": per_page}
 
 
 def _sync_professor_turma(db: Session, turma_id: int, rows: list) -> None:
@@ -364,6 +386,8 @@ def list_responsaveis(db: Session, page: int, per_page: int, search: str) -> dic
         usuario = db.query(Usuario).filter(Usuario.id == resp.usuario_id).first()
         out = schemas.ResponsavelOut.model_validate(resp)
         out.email = usuario.email if usuario else None
+        aluno_ids = db.query(Aluno.id).filter(Aluno.responsavel_id == resp.id).all()
+        out.aluno_ids = [row[0] for row in aluno_ids]
         result.append(out)
     return {"items": result, "total": total, "page": page, "per_page": per_page}
 
@@ -441,6 +465,8 @@ def deactivate_usuario(db: Session, target_id: int, caller_id: int) -> Usuario:
     usuario = db.query(Usuario).filter(Usuario.id == target_id).first()
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    if usuario.tipo.value == "admin":
+        raise HTTPException(status_code=400, detail="Não é permitido desativar outro administrador")
     usuario.ativo = False
     db.commit()
     db.refresh(usuario)

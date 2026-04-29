@@ -228,7 +228,7 @@ def deactivate_responsavel(
 # Usuario deactivation (T-03-03: self-deactivation guard)
 # ---------------------------------------------------------------------------
 
-@router.post("/usuarios/{usuario_id}/deactivate")
+@router.post("/usuarios/{usuario_id}/deactivate", response_model=schemas.UsuarioOut)
 def deactivate_usuario(
     usuario_id: int,
     db: Session = Depends(get_db),

@@ -79,6 +79,7 @@ class TurmaOut(BaseModel):
     ano: int
     serie: str
     turno: str
+    professor_turma: List[ProfessorTurmaRow] = []
 
 
 class PaginatedTurmas(BaseModel):
@@ -176,6 +177,7 @@ class ResponsavelOut(BaseModel):
     telefone: Optional[str]
     usuario_id: int
     email: Optional[str] = None
+    aluno_ids: List[int] = []
 
 
 class PaginatedResponsaveis(BaseModel):
@@ -203,6 +205,15 @@ class TurmaDesempenhoOut(BaseModel):
     num_alunos: int
     media_geral: Optional[float] = None
     pct_aprovados: Optional[float] = None
+
+
+class UsuarioOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    email: str
+    tipo: str
+    ativo: bool
 
 
 class DashboardDesempenho(BaseModel):
