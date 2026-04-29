@@ -54,13 +54,15 @@ def get_display_name(db: Session, user: Usuario) -> str:
 
 def maybe_renew_token(token: str) -> str | None:
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"], options={"verify_exp": False})
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
     except jwt.InvalidTokenError:
         return None
     exp = payload.get("exp")
     if not exp:
         return None
     now = datetime.now(timezone.utc).timestamp()
+    if exp < now:
+        return None  # already expired — do NOT renew
     if (exp - now) < 86400:  # less than 24 hours remaining
         new_data = {"sub": payload.get("sub"), "tipo": payload.get("tipo")}
         return create_access_token(new_data)
