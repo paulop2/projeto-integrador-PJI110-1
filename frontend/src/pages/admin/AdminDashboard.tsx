@@ -48,7 +48,7 @@ const countCards = [
 
 export default function AdminDashboard() {
   const { data, isLoading, isError } = useAdminDashboard()
-  const { data: desempenho, isLoading: desempenhoLoading } = useAdminDesempenho()
+  const { data: desempenho, isLoading: desempenhoLoading, isError: desempenhoError } = useAdminDesempenho()
 
   return (
     <div className="p-8">
@@ -76,6 +76,12 @@ export default function AdminDashboard() {
       </div>
 
       <h2 className="text-lg font-semibold text-gray-900 mt-8 mb-4">Desempenho por Turma</h2>
+
+      {desempenhoError && (
+        <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-md border border-red-200">
+          Erro ao carregar desempenho.
+        </div>
+      )}
 
       {desempenhoLoading ? (
         <SkeletonTable rows={5} columns={5} />
