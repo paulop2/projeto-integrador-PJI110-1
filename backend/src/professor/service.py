@@ -8,7 +8,7 @@ Patterns:
 - Chamada: find-or-create + delete+insert presencas (replace-all)
 - Notas: find-or-create avaliacao per bimestre + upsert nota
 """
-from datetime import datetime
+from datetime import date, datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from fastapi import HTTPException
@@ -42,6 +42,17 @@ def _assert_professor_owns_turma(db: Session, professor_id: int, turma_id: int) 
     ).first()
     if not link:
         raise HTTPException(status_code=403, detail="Acesso negado a esta turma")
+
+
+def _assert_professor_owns_disciplina(db: Session, professor_id: int, turma_id: int, disciplina_id: int) -> None:
+    """Raises 403 if professor is not linked to the specific disciplina in the turma."""
+    link = db.query(ProfessorTurma).filter(
+        ProfessorTurma.professor_id == professor_id,
+        ProfessorTurma.turma_id == turma_id,
+        ProfessorTurma.disciplina_id == disciplina_id,
+    ).first()
+    if not link:
+        raise HTTPException(status_code=403, detail="Acesso negado a esta disciplina")
 
 
 def _calcular_aprovado(db: Session, aluno_id: int, turma_id: int, disciplina_id: int) -> tuple:
@@ -147,17 +158,18 @@ def get_minhas_turmas(db: Session, current_user: Usuario) -> list:
     return list(turma_map.values())
 
 
-def get_chamada(db: Session, current_user: Usuario, turma_id: int, date_str: str):
+def get_chamada(db: Session, current_user: Usuario, turma_id: int, target_date: date, disciplina_id: int):
     prof = _get_professor(db, current_user)
     _assert_professor_owns_turma(db, prof.id, turma_id)
-    target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    _assert_professor_owns_disciplina(db, prof.id, turma_id, disciplina_id)
     chamada = db.query(Chamada).filter(
         Chamada.turma_id == turma_id,
+        Chamada.disciplina_id == disciplina_id,
         Chamada.professor_id == prof.id,
         Chamada.data == target_date,
     ).first()
     if not chamada:
-        return {"id": None, "data": date_str, "presencas": []}
+        return {"id": None, "data": str(target_date), "presencas": []}
     presencas = db.query(Presenca).filter(Presenca.chamada_id == chamada.id).all()
     return {
         "id": chamada.id,
@@ -169,6 +181,14 @@ def get_chamada(db: Session, current_user: Usuario, turma_id: int, date_str: str
 def upsert_chamada(db: Session, current_user: Usuario, turma_id: int, payload: schemas.ChamadaCreate):
     prof = _get_professor(db, current_user)
     _assert_professor_owns_turma(db, prof.id, turma_id)
+    _assert_professor_owns_disciplina(db, prof.id, turma_id, payload.disciplina_id)
+    # Validate all aluno_ids belong to this turma
+    allowed_aluno_ids = {
+        a.id for a in db.query(Aluno).filter(Aluno.turma_id == turma_id, Aluno.ativo == True).all()
+    }
+    for p in payload.presencas:
+        if p.aluno_id not in allowed_aluno_ids:
+            raise HTTPException(status_code=422, detail=f"Aluno {p.aluno_id} nao pertence a esta turma")
     chamada = db.query(Chamada).filter(
         Chamada.turma_id == turma_id,
         Chamada.disciplina_id == payload.disciplina_id,
@@ -195,6 +215,7 @@ def upsert_chamada(db: Session, current_user: Usuario, turma_id: int, payload: s
 def get_notas(db: Session, current_user: Usuario, turma_id: int, disciplina_id: int) -> list:
     prof = _get_professor(db, current_user)
     _assert_professor_owns_turma(db, prof.id, turma_id)
+    _assert_professor_owns_disciplina(db, prof.id, turma_id, disciplina_id)
     alunos = db.query(Aluno).filter(Aluno.turma_id == turma_id, Aluno.ativo == True).all()
     avaliacoes = db.query(Avaliacao).filter(
         Avaliacao.turma_id == turma_id,
@@ -218,7 +239,14 @@ def get_notas(db: Session, current_user: Usuario, turma_id: int, disciplina_id: 
 def upsert_notas(db: Session, current_user: Usuario, turma_id: int, payload: schemas.NotasCreate):
     prof = _get_professor(db, current_user)
     _assert_professor_owns_turma(db, prof.id, turma_id)
+    _assert_professor_owns_disciplina(db, prof.id, turma_id, payload.disciplina_id)
+    # Validate all aluno_ids belong to this turma
+    allowed_aluno_ids = {
+        a.id for a in db.query(Aluno).filter(Aluno.turma_id == turma_id, Aluno.ativo == True).all()
+    }
     for grade in payload.grades:
+        if grade.aluno_id not in allowed_aluno_ids:
+            raise HTTPException(status_code=422, detail=f"Aluno {grade.aluno_id} nao pertence a esta turma")
         avaliacao = db.query(Avaliacao).filter(
             Avaliacao.turma_id == turma_id,
             Avaliacao.disciplina_id == payload.disciplina_id,
