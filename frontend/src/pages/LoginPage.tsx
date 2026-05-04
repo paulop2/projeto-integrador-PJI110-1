@@ -88,6 +88,10 @@ export default function LoginPage() {
     setCapsLockOn(e.getModifierState('CapsLock'))
   }
 
+  const handlePasswordMouseState = (e: React.MouseEvent<HTMLInputElement>) => {
+    setCapsLockOn(e.getModifierState('CapsLock'))
+  }
+
   return (
     <div className="flex h-screen w-full bg-white">
       {/* ── Left panel ── */}
@@ -203,7 +207,7 @@ export default function LoginPage() {
                   onChange={(e) => { setSenha(e.target.value); if (senhaError) setSenhaError('') }}
                   onBlur={validateSenha}
                   onKeyUp={handlePasswordKeyState}
-                  onClick={handlePasswordKeyState}
+                  onClick={handlePasswordMouseState}
                   className={`w-full rounded-lg border px-3.5 py-2.5 pr-11 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${
                     senhaError ? 'border-red-400 bg-red-50' : 'border-gray-300 bg-white'
                   }`}

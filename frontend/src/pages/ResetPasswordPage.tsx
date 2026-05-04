@@ -100,6 +100,10 @@ export default function ResetPasswordPage() {
     setCapsLockOn(e.getModifierState('CapsLock'))
   }
 
+  const handlePasswordMouseState = (e: React.MouseEvent<HTMLInputElement>) => {
+    setCapsLockOn(e.getModifierState('CapsLock'))
+  }
+
   if (!token) {
     return (
       <div className="mx-auto mt-16 max-w-md px-6">
@@ -143,7 +147,7 @@ export default function ResetPasswordPage() {
               }}
               onBlur={validateNovaSenha}
               onKeyUp={handlePasswordKeyState}
-              onClick={handlePasswordKeyState}
+              onClick={handlePasswordMouseState}
               className={`w-full rounded-md border px-3 py-2 pr-10 text-sm outline-none focus:ring-2 focus:ring-indigo-500 ${
                 novaSenhaError ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -183,7 +187,7 @@ export default function ResetPasswordPage() {
               }}
               onBlur={validateConfirmarSenha}
               onKeyUp={handlePasswordKeyState}
-              onClick={handlePasswordKeyState}
+              onClick={handlePasswordMouseState}
               className={`w-full rounded-md border px-3 py-2 pr-10 text-sm outline-none focus:ring-2 focus:ring-indigo-500 ${
                 confirmarSenhaError ? 'border-red-500' : 'border-gray-300'
               }`}
