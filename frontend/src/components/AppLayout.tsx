@@ -36,6 +36,21 @@ export default function AppLayout() {
     }
   }, [dropdownOpen])
 
+  useEffect(() => {
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setDropdownOpen(false)
+      }
+    }
+
+    if (dropdownOpen) {
+      document.addEventListener('keydown', handleEscape)
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [dropdownOpen])
+
   const handleLogout = () => {
     setDropdownOpen(false)
     logout()
@@ -44,6 +59,12 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      <a
+        href="#conteudo-principal"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-indigo-700 focus:shadow"
+      >
+        Ir para o conteúdo principal
+      </a>
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -60,6 +81,9 @@ export default function AppLayout() {
             <button
               onClick={() => setDropdownOpen((prev) => !prev)}
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-haspopup="menu"
+              aria-expanded={dropdownOpen}
+              aria-controls="user-menu"
             >
               <span>
                 {user?.nome} ({tipoLabel})
@@ -80,10 +104,11 @@ export default function AppLayout() {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+              <div id="user-menu" role="menu" className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors"
+                  role="menuitem"
                 >
                   Sair
                 </button>
@@ -94,7 +119,7 @@ export default function AppLayout() {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 pt-16">
+      <main id="conteudo-principal" className="flex-1 pt-16">
         <Outlet />
       </main>
     </div>

@@ -1,13 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { api } from '../services/api'
 
 export default function ForgotPasswordPage() {
+  const emailInputRef = useRef<HTMLInputElement>(null)
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    emailInputRef.current?.focus()
+  }, [])
 
   const mutation = useMutation({
     mutationFn: (body: { email: string }) =>
@@ -71,6 +76,7 @@ export default function ForgotPasswordPage() {
             Email
           </label>
           <input
+            ref={emailInputRef}
             id="email"
             type="email"
             value={email}
@@ -83,9 +89,12 @@ export default function ForgotPasswordPage() {
               emailError ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="seu@email.com"
+            autoComplete="email"
+            aria-invalid={Boolean(emailError)}
+            aria-describedby={emailError ? 'forgot-email-error' : undefined}
           />
           {emailError && (
-            <p className="mt-1 text-xs text-red-600">{emailError}</p>
+            <p id="forgot-email-error" className="mt-1 text-xs text-red-600">{emailError}</p>
           )}
         </div>
 
@@ -98,7 +107,7 @@ export default function ForgotPasswordPage() {
         </button>
 
         {error && (
-          <p className="mt-3 text-center text-sm text-red-600">{error}</p>
+          <p role="alert" className="mt-3 text-center text-sm text-red-600">{error}</p>
         )}
       </form>
 

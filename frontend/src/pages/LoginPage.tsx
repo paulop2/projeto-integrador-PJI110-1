@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useAuth } from '../contexts/AuthContext'
@@ -36,13 +36,19 @@ function EyeIcon({ open }: { open: boolean }) {
 export default function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const emailInputRef = useRef<HTMLInputElement>(null)
 
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [capsLockOn, setCapsLockOn] = useState(false)
   const [emailError, setEmailError] = useState('')
   const [senhaError, setSenhaError] = useState('')
   const [loginError, setLoginError] = useState('')
+
+  useEffect(() => {
+    emailInputRef.current?.focus()
+  }, [])
 
   const mutation = useMutation({
     mutationFn: (body: { email: string; senha: string }) =>
@@ -76,6 +82,10 @@ export default function LoginPage() {
     const senhaOk = validateSenha()
     const ok = emailOk && senhaOk
     if (ok) mutation.mutate({ email, senha })
+  }
+
+  const handlePasswordKeyState = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    setCapsLockOn(e.getModifierState('CapsLock'))
   }
 
   return (
@@ -158,6 +168,7 @@ export default function LoginPage() {
                 Email
               </label>
               <input
+                ref={emailInputRef}
                 id="email"
                 type="email"
                 value={email}
@@ -168,8 +179,10 @@ export default function LoginPage() {
                 }`}
                 placeholder="seu@email.com"
                 autoComplete="email"
+                aria-invalid={Boolean(emailError)}
+                aria-describedby={emailError ? 'email-error' : undefined}
               />
-              {emailError && <p className="mt-1.5 text-xs text-red-600">{emailError}</p>}
+              {emailError && <p id="email-error" className="mt-1.5 text-xs text-red-600">{emailError}</p>}
             </div>
 
             {/* Senha */}
@@ -189,27 +202,34 @@ export default function LoginPage() {
                   value={senha}
                   onChange={(e) => { setSenha(e.target.value); if (senhaError) setSenhaError('') }}
                   onBlur={validateSenha}
+                  onKeyUp={handlePasswordKeyState}
+                  onClick={handlePasswordKeyState}
                   className={`w-full rounded-lg border px-3.5 py-2.5 pr-11 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${
                     senhaError ? 'border-red-400 bg-red-50' : 'border-gray-300 bg-white'
                   }`}
                   placeholder="Sua senha"
                   autoComplete="current-password"
+                  aria-invalid={Boolean(senhaError)}
+                  aria-describedby={senhaError || capsLockOn ? 'senha-help' : undefined}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-gray-100 transition-colors"
-                  tabIndex={-1}
                   aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                 >
                   <EyeIcon open={showPassword} />
                 </button>
               </div>
-              {senhaError && <p className="mt-1.5 text-xs text-red-600">{senhaError}</p>}
+              {(senhaError || capsLockOn) && (
+                <p id="senha-help" className={`mt-1.5 text-xs ${senhaError ? 'text-red-600' : 'text-amber-600'}`}>
+                  {senhaError || 'Caps Lock ativado'}
+                </p>
+              )}
             </div>
 
             {loginError && (
-              <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <div role="alert" className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
