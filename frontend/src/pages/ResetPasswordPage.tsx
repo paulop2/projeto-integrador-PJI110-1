@@ -43,6 +43,7 @@ export default function ResetPasswordPage() {
   const [confirmarSenha, setConfirmarSenha] = useState('')
   const [showNovaSenha, setShowNovaSenha] = useState(false)
   const [showConfirmarSenha, setShowConfirmarSenha] = useState(false)
+  const [capsLockOn, setCapsLockOn] = useState(false)
   const [novaSenhaError, setNovaSenhaError] = useState('')
   const [confirmarSenhaError, setConfirmarSenhaError] = useState('')
   const [error, setError] = useState('')
@@ -95,6 +96,10 @@ export default function ResetPasswordPage() {
     }
   }
 
+  const handlePasswordKeyState = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    setCapsLockOn(e.getModifierState('CapsLock'))
+  }
+
   if (!token) {
     return (
       <div className="mx-auto mt-16 max-w-md px-6">
@@ -137,23 +142,29 @@ export default function ResetPasswordPage() {
                 if (novaSenhaError) setNovaSenhaError('')
               }}
               onBlur={validateNovaSenha}
+              onKeyUp={handlePasswordKeyState}
+              onClick={handlePasswordKeyState}
               className={`w-full rounded-md border px-3 py-2 pr-10 text-sm outline-none focus:ring-2 focus:ring-indigo-500 ${
                 novaSenhaError ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="Mínimo 8 caracteres"
+              autoComplete="new-password"
+              aria-invalid={Boolean(novaSenhaError)}
+              aria-describedby={novaSenhaError || capsLockOn ? 'nova-senha-help' : undefined}
             />
             <button
               type="button"
               onClick={() => setShowNovaSenha((prev) => !prev)}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1"
-              tabIndex={-1}
               aria-label={showNovaSenha ? 'Ocultar senha' : 'Mostrar senha'}
             >
               <EyeIcon open={showNovaSenha} />
             </button>
           </div>
-          {novaSenhaError && (
-            <p className="mt-1 text-xs text-red-600">{novaSenhaError}</p>
+          {(novaSenhaError || capsLockOn) && (
+            <p id="nova-senha-help" className={`mt-1 text-xs ${novaSenhaError ? 'text-red-600' : 'text-amber-600'}`}>
+              {novaSenhaError || 'Caps Lock ativado'}
+            </p>
           )}
         </div>
 
@@ -171,23 +182,29 @@ export default function ResetPasswordPage() {
                 if (confirmarSenhaError) setConfirmarSenhaError('')
               }}
               onBlur={validateConfirmarSenha}
+              onKeyUp={handlePasswordKeyState}
+              onClick={handlePasswordKeyState}
               className={`w-full rounded-md border px-3 py-2 pr-10 text-sm outline-none focus:ring-2 focus:ring-indigo-500 ${
                 confirmarSenhaError ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="Repita a nova senha"
+              autoComplete="new-password"
+              aria-invalid={Boolean(confirmarSenhaError)}
+              aria-describedby={confirmarSenhaError || capsLockOn ? 'confirmar-senha-help' : undefined}
             />
             <button
               type="button"
               onClick={() => setShowConfirmarSenha((prev) => !prev)}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1"
-              tabIndex={-1}
               aria-label={showConfirmarSenha ? 'Ocultar senha' : 'Mostrar senha'}
             >
               <EyeIcon open={showConfirmarSenha} />
             </button>
           </div>
-          {confirmarSenhaError && (
-            <p className="mt-1 text-xs text-red-600">{confirmarSenhaError}</p>
+          {(confirmarSenhaError || capsLockOn) && (
+            <p id="confirmar-senha-help" className={`mt-1 text-xs ${confirmarSenhaError ? 'text-red-600' : 'text-amber-600'}`}>
+              {confirmarSenhaError || 'Caps Lock ativado'}
+            </p>
           )}
         </div>
 
@@ -201,7 +218,7 @@ export default function ResetPasswordPage() {
 
         {error && (
           <div className="mt-4 text-center">
-            <p className="text-sm text-red-600">{error}</p>
+            <p role="alert" className="text-sm text-red-600">{error}</p>
             <Link
               to="/esqueci-senha"
               className="mt-2 inline-block text-sm text-indigo-600 hover:underline"
