@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-04-26)
 
 **Core value:** Pais acompanham o desempenho escolar dos filhos — notas e presença — sem precisar ir até a escola.
-**Current focus:** Phase 8 - UX Polish
+**Current focus:** Phase 9 - Notificações
 
 ## Current Position
 
-Phase: 8 of 10 (UX Polish)
-Plan: 3 of 3 in current phase
-Status: Phase Complete
-Last activity: 2026-05-12 — Completed 08-03 responsive tables and padding + clean build
+Phase: 9 of 10 (Notificações)
+Plan: 0 of 1 in current phase
+Status: Ready to execute
+Last activity: 2026-05-12 — Phase 8 complete: all 3 plans executed, build clean
 
-Progress: [████████████████████░░░░░░░░░░] 80%
+Progress: [██████████████████████████░░░░] 90%
 
 ## Performance Metrics
 
@@ -107,4 +107,4 @@ Resume file: None
 - Phase 8 UI design contract approved on 2026-05-12
 - File: `.planning/phases/08-ux-polish/08-UI-SPEC.md`
 
-**To resume:** Proceed to 08-03 responsividade planning — `/gsd-plan-phase 08` or `/gsd-execute-phase 08`
+**To resume:** Proceed to Phase 9 planning — `/gsd-plan-phase 09` or `/gsd-discuss-phase 09`

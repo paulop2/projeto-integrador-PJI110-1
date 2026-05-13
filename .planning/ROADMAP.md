@@ -18,7 +18,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Portal do Professor** - Registro de chamada e lançamento de notas por turma/bimestre
 - [x] **Phase 5: Portal do Responsável** - Boletim e frequência do filho com cálculos automáticos
 - [x] **Phase 6: Dashboard e Polish** - Dashboard agregado, alertas LDB e estados de erro/loading
-- [ ] **Phase 7: Deploy** - Sistema está rodando em produção no Render com deploy automático via GitHub Actions
+- [x] **Phase 7: Deploy** - Sistema está rodando em produção no Render com deploy automático via GitHub Actions
+- [x] **Phase 8: UX Polish** - Frontend responsivo e padronizado — sidebar colapsável com hamburger, avatar com dropdown em todos os perfis, interface usável no mobile
+- [ ] **Phase 9: Notificações** - Responsável vê painel de alertas de risco (frequência < 75% e reprovação iminente) baseado nos dados já calculados pelo backend
+- [ ] **Phase 10: Relatório e Roteiro** - Relatório final acadêmico e roteiro do vídeo de demonstração dividido por integrante prontos para entrega
 
 ## Phase Details
 
@@ -178,10 +181,72 @@ Cross-cutting constraints:
 - No hardcoded URLs or secrets — all URLs and credentials injected via platform env vars (CORS_ORIGINS, VITE_API_URL, FRONTEND_URL, SECRET_KEY)
 - preDeployCommand not available on Render free tier — use compound startCommand: `bash -c "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port $PORT"` (D-07 superseded)
 
+### Phase 8: UX Polish
+**Goal**: Frontend responsivo e padronizado — sidebar do admin colapsável com hamburger button, avatar com dropdown em todos os perfis (admin, professor, responsável), interface usável em telas mobile sem quebrar layout
+**Depends on**: Phase 7
+**Requirements**: UX-01
+**Success Criteria** (what must be TRUE):
+  1. Sidebar do admin possui botão hamburger que colapsa para ícones apenas (ou overlay no mobile)
+  2. Em viewport < 768px o layout do admin não transborda horizontalmente e o conteúdo principal é acessível
+  3. Todos os perfis (admin, professor, responsável) têm avatar com iniciais e dropdown com pelo menos nome, tipo e botão de logout
+  4. Tabelas de dados (EntityTable, BoletimTable, GradeTable) são legíveis no mobile — scroll horizontal ou cards adaptados
+  5. Nenhuma regressão funcional — todas as features existentes continuam operando
+
+**Plans**: 3 plans
+
+Plans:
+**Wave 1** *(01 e 02 paralelos)*
+- [ ] 08-01-PLAN.md — Sidebar colapsável: estado collapsed/expanded, hamburger button, overlay no mobile, AdminLayout responsivo
+- [ ] 08-02-PLAN.md — Avatar dropdown padronizado: componente UserMenu reutilizável com iniciais + nome + tipo + logout, aplicado em AdminLayout, AppLayout (professor e responsável)
+
+**Wave 2** *(bloqueado no Wave 1)*
+- [ ] 08-03-PLAN.md — Responsividade de tabelas e páginas: scroll horizontal em EntityTable/BoletimTable/GradeTable, breakpoints nas páginas admin, verificação em viewport mobile
+
+Cross-cutting constraints:
+- Sem mudanças no backend — apenas frontend
+- Sem quebrar TypeScript build (`npm run build` deve continuar passando)
+- Usar classes Tailwind existentes — sem adicionar nova lib de UI
+
+### Phase 9: Notificações
+**Goal**: Responsável vê painel de alertas de risco (frequência < 75% e reprovação iminente) baseado nos dados já retornados pelo endpoint `/responsavel/boletim` — sem nova API
+**Depends on**: Phase 8
+**Requirements**: NOTIF-01
+**Success Criteria** (what must be TRUE):
+  1. Se qualquer disciplina do filho tiver `freq_pct < 75`, aparece alerta visual destacado no portal do responsável (diferente do badge de status já existente — é um painel/banner consolidado no topo)
+  2. Se qualquer disciplina tiver `status: reprovado`, aparece alerta de reprovação no mesmo painel
+  3. Se tudo estiver OK, o painel mostra confirmação positiva (não some — comunica o estado)
+  4. Os alertas refletem o filho selecionado (troca junto com ChildSelector)
+  5. Sem nova chamada de API — usa os dados do `useBoletim` já existente
+
+**Plans**: 1 plan
+
+Plans:
+- [ ] 09-01-PLAN.md — Componente AlertPanel: lê dados de boletim existentes, agrupa por tipo de risco, exibe banner no topo do ResponsavelBoletimPage, sem regressão
+
+Cross-cutting constraints:
+- Sem mudanças no backend
+- Sem novo endpoint — dados vêm do `useBoletim` já carregado na página
+- Alertas devem ser acessíveis (role="alert" ou aria-live)
+
+### Phase 10: Relatório e Roteiro
+**Goal**: Relatório final acadêmico e roteiro do vídeo de demonstração dividido por integrante prontos para entrega na data de 2026-05-19
+**Depends on**: Phase 9
+**Requirements**: ENTREGA-01
+**Success Criteria** (what must be TRUE):
+  1. Relatório cobre: introdução/contexto, requisitos, arquitetura técnica (stack, decisões), funcionalidades implementadas por fase, deploy, limitações e trabalhos futuros
+  2. Roteiro de vídeo dividido por integrante com falas aproximadas e o que mostrar na tela em cada momento
+  3. Vídeo demonstra todos os três perfis (admin, professor, responsável) em fluxo contínuo
+
+**Plans**: 2 plans
+
+Plans:
+- [ ] 10-01-PLAN.md — Relatório final: estrutura de seções, conteúdo técnico baseado nos artefatos GSD (.planning/), decisões de projeto documentadas
+- [ ] 10-02-PLAN.md — Roteiro do vídeo: script dividido por integrante, cenas por funcionalidade, tempo estimado por seção, falas sugeridas
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -191,4 +256,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Portal do Professor | 4/4 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 5. Portal do Responsável | 3/3 | ✓ Complete (verification deferred) | 2026-04-27 |
 | 6. Dashboard e Polish | 4/4 | ✓ Complete (verification deferred) | 2026-04-28 |
-| 7. Deploy | 0/? | Not started | - |
+| 7. Deploy | 2/2 | ✓ Complete | 2026-05-12 |
+| 8. UX Polish | 3/3 | ✓ Complete | 2026-05-12 |
+| 9. Notificações | 0/? | Not started | - |
+| 9. Notificações | 0/? | Not started | - |
+| 10. Relatório e Roteiro | 0/? | Not started | - |
