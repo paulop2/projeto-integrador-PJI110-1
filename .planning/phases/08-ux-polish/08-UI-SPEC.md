@@ -1,10 +1,11 @@
 ---
 phase: 8
 slug: ux-polish
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-05-12
+reviewed_at: 2026-05-12
 ---
 
 # Phase 8 — UI Design Contract
@@ -49,7 +50,7 @@ Tailwind default spacing scale — multiples of 4px:
 | w-60 | 240px | Expanded sidebar width (existing) |
 
 Exceptions:
-- Touch targets (hamburger, avatar button): minimum 44px hit area — use `p-2.5` (10px) on a `w-6 h-6` icon to reach 44px total
+- Touch targets (hamburger, avatar button): use `p-3` (12px) on a `w-6 h-6` icon to achieve 48px total hit area (exceeds WCAG 44px minimum)
 - Sidebar collapsed icon items: `px-0 py-2` with icon centered via `justify-center`
 - Overlay z-index: `z-40` for backdrop, `z-50` for drawer panel, `z-50` for header (matching existing AppLayout)
 
@@ -61,18 +62,20 @@ Derived from existing codebase class usage:
 
 | Role | Tailwind Class | Size | Weight | Line Height |
 |------|----------------|------|--------|-------------|
-| Body | `text-sm` | 14px | 400 (normal) | 1.5 (Tailwind default) |
-| Label / UI | `text-xs` | 12px | 500 (medium) or 600 (semibold) | 1.25 |
-| Heading | `text-xl` or `text-2xl` | 20px or 24px | 600 (semibold) | 1.2 |
-| Logo / Brand | `text-xl font-bold` | 20px | 700 (bold) | 1.2 |
+| Sidebar section label | `text-[10px]` | 10px | 600 (semibold) | 1.25 |
+| Label / UI / Tooltip | `text-xs` | 12px | 400 (normal) or 600 (semibold) | 1.25 |
+| Body / Nav | `text-sm` | 14px | 400 (normal) | 1.5 (Tailwind default) |
+| Heading / Logo | `text-xl` | 20px | 600 (semibold) | 1.2 |
+
+Permitted weights: `font-normal` (400) and `font-semibold` (600) only.
 
 Phase-specific typography rules:
-- Sidebar nav labels (expanded): `text-sm font-medium` (14px / 500)
+- Sidebar nav labels (expanded): `text-sm font-semibold` (14px / 600)
 - Sidebar nav labels (collapsed): hidden — `sr-only` or `hidden` class
 - Sidebar section heading "Menu": `text-[10px] font-semibold uppercase tracking-widest` (existing — preserve)
-- Header user name: `text-sm font-medium` (14px / 500)
+- Header user name: `text-sm font-semibold` (14px / 600)
 - Header profile type: `text-sm` (14px / 400) in `text-gray-500`
-- Avatar initials: `text-xs font-bold` (12px / 700)
+- Avatar initials: `text-xs font-semibold` (12px / 600)
 - Dropdown items: `text-sm` (14px / 400), logout in `text-red-600`
 - Tooltip (collapsed sidebar hover): `text-xs` (12px) white on `bg-gray-900`
 
@@ -214,7 +217,7 @@ Collapsed state — hamburger replaces logo (D-03):
 **Nav item (expanded):**
 ```tsx
 <NavLink className={({ isActive }) =>
-  `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors
+  `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold transition-colors
    ${isActive ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`
 }>
   <Icon />
@@ -234,7 +237,7 @@ Nav items conditional label: `{!collapsed && <span>{label}</span>}`
 // Collapsed footer
 <div className="p-2 border-t border-gray-800 flex justify-center">
   <div className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-400
-                  flex items-center justify-center text-xs font-bold">
+                  flex items-center justify-center text-xs font-semibold">
     {initials}
   </div>
 </div>
@@ -307,7 +310,7 @@ const [mobileOpen, setMobileOpen] = useState(false)
       </button>
 
       {/* Logo — visible on mobile (desktop logo is in sidebar) */}
-      <span className="md:hidden text-lg font-bold text-indigo-600">EscolaApp</span>
+      <span className="md:hidden text-xl font-semibold text-indigo-600">EscolaApp</span>
       <span className="hidden md:block" />  {/* spacer on desktop */}
 
       {/* UserMenu component */}
@@ -360,7 +363,7 @@ const tipoLabelMap: Record<string, string> = {
 ```tsx
 <button
   onClick={() => setDropdownOpen(prev => !prev)}
-  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium
+  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-semibold
              text-gray-700 hover:bg-gray-100 transition-colors
              focus:outline-none focus:ring-2 focus:ring-indigo-500"
   aria-haspopup="menu"
@@ -369,13 +372,13 @@ const tipoLabelMap: Record<string, string> = {
 >
   {/* Avatar circle */}
   <span className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400
-                   flex items-center justify-center text-xs font-bold flex-shrink-0
+                   flex items-center justify-center text-xs font-semibold flex-shrink-0
                    select-none">
     {initials}
   </span>
   {/* Name + type — hidden on very small screens if needed */}
   <span className="hidden sm:flex flex-col items-start leading-tight">
-    <span className="text-sm font-medium text-gray-900 max-w-[120px] truncate">
+    <span className="text-sm font-semibold text-gray-900 max-w-[120px] truncate">
       {user?.nome}
     </span>
     <span className="text-xs text-gray-500">{tipoLabel}</span>
@@ -402,7 +405,7 @@ Avatar size: `w-8 h-8` (32px) — larger than sidebar footer avatar (`w-7 h-7`) 
 >
   {/* Identity row — not interactive */}
   <div className="px-4 py-2 border-b border-gray-100">
-    <p className="text-sm font-medium text-gray-900 truncate">{user?.nome}</p>
+    <p className="text-sm font-semibold text-gray-900 truncate">{user?.nome}</p>
     <p className="text-xs text-gray-500">{tipoLabel}</p>
   </div>
   {/* Logout */}
@@ -589,11 +592,11 @@ No new npm packages, no new registries, no new icon libraries. All changes use e
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [ ] Dimension 1 Copywriting
+- [ ] Dimension 2 Visuals
+- [ ] Dimension 3 Color
+- [ ] Dimension 4 Typography
+- [ ] Dimension 5 Spacing
+- [ ] Dimension 6 Registry Safety
 
 **Approval:** pending
