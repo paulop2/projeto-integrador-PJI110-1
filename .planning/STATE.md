@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 ## Current Position
 
 Phase: 8 of 10 (UX Polish)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In Progress
-Last activity: 2026-05-13 — Completed 08-01 sidebar collapse + AdminLayout header
+Last activity: 2026-05-13 — Completed 08-02 UserMenu component + AppLayout refactor
 
 Progress: [████████████████████░░░░░░░░░░] 70%
 
@@ -96,12 +96,14 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-05-13
-Stopped at: Completed 08-01-PLAN.md
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None
 
 ### UI-SPEC Approved
 - Phase 4 UI design contract approved on 2026-04-27
 - 6/6 dimensions passed (Copywriting, Visuals, Color, Typography, Spacing, Registry Safety)
 - File: `.planning/phases/04-portal-do-professor/04-UI-SPEC.md`
+- Phase 8 UI design contract approved on 2026-05-12
+- File: `.planning/phases/08-ux-polish/08-UI-SPEC.md`
 
-**To resume:** Proceed to Phase 4 planning — `/gsd-plan-phase 04` or `/gsd-discuss-phase 04`.
+**To resume:** Proceed to 08-03 responsividade planning — `/gsd-plan-phase 08` or `/gsd-execute-phase 08`
