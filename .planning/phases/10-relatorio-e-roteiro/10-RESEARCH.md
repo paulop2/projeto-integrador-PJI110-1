@@ -463,32 +463,32 @@ de Valinhos-SP, e as tecnologias utilizadas — NÃO é o mesmo texto do Resumo 
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Título exato do trabalho**
    - O que sabemos: CONTEXT.md D-Claude's Discretion — equipe decide
    - O que falta: decisão da equipe
-   - Recomendação: usar placeholder `[TÍTULO DO TRABALHO]` no rascunho. Sugestão: "Sistema Web de Registro Escolar: Uma Solução para Acompanhamento de Desempenho por Responsáveis"
+   - RESOLVED: usar placeholder `[TÍTULO DO TRABALHO]` no rascunho. Sugestão: "Sistema Web de Registro Escolar: Uma Solução para Acompanhamento de Desempenho por Responsáveis"
 
 2. **RA (Registro Acadêmico) de cada integrante**
    - O que sabemos: CONTEXT.md D-04 — usar `[RA]` como placeholder
    - O que falta: equipe preenche na capa e ficha técnica
-   - Recomendação: planner gera tabela com coluna RA vazia para a equipe preencher
+   - RESOLVED: planner gera tabela com coluna RA vazia para a equipe preencher
 
 3. **Detalhes específicos da escola parceira**
    - O que sabemos: Valinhos-SP, rede municipal, professora Elizabete
    - O que falta: nome da escola, número de alunos, modalidade exata
-   - Recomendação: planner gera com `[NOME DA ESCOLA]`, `[NÚMERO DE ALUNOS]` como placeholders — esses são os únicos placeholders permitidos (não são sobre conteúdo técnico, são dados factuais que só a equipe conhece)
+   - RESOLVED: planner gera com `[NOME DA ESCOLA]`, `[NÚMERO DE ALUNOS]` como placeholders — esses são os únicos placeholders permitidos (não são sobre conteúdo técnico, são dados factuais que só a equipe conhece)
 
 4. **Link do YouTube do vídeo**
    - O que sabemos: vídeo ainda não gravado (fase é simultânea)
    - O que falta: a equipe grava e insere o link
-   - Recomendação: roteiro inclui instrução "[INSERIR LINK YOUTUBE APÓS UPLOAD]" como placeholder na capa do relatório e na Ficha Técnica
+   - RESOLVED: roteiro inclui instrução "[INSERIR LINK YOUTUBE APÓS UPLOAD]" como placeholder na capa do relatório e na Ficha Técnica
 
 5. **Phase 9 (Notificações) concluída antes da entrega?**
    - O que sabemos: STATE.md mostra Phase 9 "Not started" em 2026-05-12; prazo é 2026-05-19
    - O que falta: status real em 2026-05-13
-   - Recomendação: relatorio deve cobrir fases 1-8 como completadas + Phase 9 como "em finalização" se ainda não concluída; planner inclui seção de Resultados que pode ser atualizada para incluir Phase 9 se concluída antes do relatório ser transferido para Word
+   - RESOLVED: relatorio cobre fases 1-8 como completadas + Phase 9 como "em finalização" se ainda não concluída; planner inclui seção de Resultados que pode ser atualizada para incluir Phase 9 se concluída antes do relatório ser transferido para Word
 
 ---
 
