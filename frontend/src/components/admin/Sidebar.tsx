@@ -82,7 +82,7 @@ const navItems = [
   { to: '/admin/responsaveis',label: 'Responsáveis',end: false, Icon: IconFamily },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -96,63 +96,116 @@ export default function Sidebar() {
     : 'A'
 
   return (
-    <aside className="w-60 bg-gray-950 text-white flex flex-col flex-shrink-0 border-r border-gray-800">
+    <aside
+      aria-label="Menu de navegação administrativo"
+      className={`flex-shrink-0 bg-gray-950 text-white flex flex-col border-r border-gray-800 transition-all duration-300 ease-in-out ${collapsed ? 'w-14' : 'w-60'}`}
+    >
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-gray-800">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-              <path d="M6 12v5c3 3 9 3 12 0v-5" />
+      {collapsed ? (
+        <div className="px-0 py-4 border-b border-gray-800 flex items-center justify-center">
+          <button
+            onClick={onToggle}
+            className="p-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Expandir menu"
+            aria-expanded={false}
+            aria-controls="admin-sidebar-nav"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-white leading-tight">EscolaApp</p>
-            <p className="text-xs text-gray-500 leading-tight">Painel Administrativo</p>
-          </div>
+          </button>
         </div>
-      </div>
+      ) : (
+        <div className="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c3 3 9 3 12 0v-5" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white leading-tight">EscolaApp</p>
+              <p className="text-xs text-gray-500 leading-tight">Painel Administrativo</p>
+            </div>
+          </div>
+          <button
+            onClick={onToggle}
+            className="p-2 rounded-md text-gray-400 hover:bg-gray-800 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Colapsar menu"
+            aria-expanded={true}
+            aria-controls="admin-sidebar-nav"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        <p className="px-2 pb-2 text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Menu</p>
+      <nav id="admin-sidebar-nav" className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {!collapsed && (
+          <p className="px-2 pb-2 text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Menu</p>
+        )}
         {navItems.map(({ to, label, end, Icon }) => (
           <NavLink
             key={to}
             to={to}
             end={end}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-              }`
+              collapsed
+                ? `flex items-center justify-center px-0 py-3 rounded-md transition-colors ${isActive ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`
+                : `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold transition-colors ${isActive ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`
             }
           >
-            <Icon />
-            {label}
+            {collapsed ? (
+              <span className="relative group">
+                <Icon />
+                <span className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  {label}
+                </span>
+              </span>
+            ) : (
+              <>
+                <Icon />
+                <span>{label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </nav>
 
       {/* User */}
       <div className="p-3 border-t border-gray-800">
-        <div className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-gray-800 transition-colors group">
-          <div className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
-            {initials}
+        {collapsed ? (
+          <div className="flex justify-center p-2">
+            <div className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-semibold">
+              {initials}
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-white font-medium truncate">{user?.nome}</p>
-            <p className="text-[10px] text-gray-500 truncate">{user?.email}</p>
+        ) : (
+          <div className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-gray-800 transition-colors group">
+            <div className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
+              {initials}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-white font-medium truncate">{user?.nome}</p>
+              <p className="text-[10px] text-gray-500 truncate">{user?.email}</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-white transition-all"
+              title="Sair"
+            >
+              <IconLogout />
+            </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-white transition-all"
-            title="Sair"
-          >
-            <IconLogout />
-          </button>
-        </div>
+        )}
       </div>
     </aside>
   )
