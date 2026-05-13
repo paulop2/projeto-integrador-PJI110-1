@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-04-26)
 
 **Core value:** Pais acompanham o desempenho escolar dos filhos — notas e presença — sem precisar ir até a escola.
-**Current focus:** Phase 7 - Deploy
+**Current focus:** Phase 8 - UX Polish
 
 ## Current Position
 
-Phase: 7 of 7 (Deploy)
-Plan: 0 of 2 in current phase
+Phase: 8 of 10 (UX Polish)
+Plan: 0 of 3 in current phase
 Status: Ready to execute
-Last activity: 2026-04-29 — Phase 7 planned: 2 plans in 2 waves (Wave 1 autonomous, Wave 2 manual platform setup)
+Last activity: 2026-05-12 — Phase 8 planned: 3 plans in 2 waves (08-01 sidebar, 08-02 UserMenu, 08-03 responsividade)
 
-Progress: [████████████████████████████░░] 86%
+Progress: [████████████████████░░░░░░░░░░] 70%
 
 ## Performance Metrics
 
