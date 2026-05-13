@@ -59,7 +59,9 @@ export function EntityTable<T>({
       </div>
 
       {isLoading ? (
-        <SkeletonTable rows={5} columns={columns.length + 1} />
+        <div className="overflow-x-auto">
+          <SkeletonTable rows={5} columns={columns.length + 1} />
+        </div>
       ) : rows.length === 0 ? (
         <div className="text-center py-12 text-gray-400 text-sm">Nenhum registro encontrado.</div>
       ) : (
