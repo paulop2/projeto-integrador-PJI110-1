@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-04-26)
 ## Current Position
 
 Phase: 8 of 10 (UX Polish)
-Plan: 0 of 3 in current phase
-Status: Ready to execute
-Last activity: 2026-05-12 — Phase 8 planned: 3 plans in 2 waves (08-01 sidebar, 08-02 UserMenu, 08-03 responsividade)
+Plan: 1 of 3 in current phase
+Status: In Progress
+Last activity: 2026-05-13 — Completed 08-01 sidebar collapse + AdminLayout header
 
 Progress: [████████████████████░░░░░░░░░░] 70%
 
@@ -54,6 +54,8 @@ Progress: [████████████████████░░░
 | Phase 02-autentica-o P03 | 2min | 2 tasks | 2 files |
 | Phase 02-autentica-o P02 | 5min | 2 tasks | 5 files |
 | Phase 02-autentica-o P05 | 5min | 2 tasks | 7 files |
+| Phase 08-ux-polish P01 | 2min | 2 tasks | 2 files |
+| Phase 08-ux-polish P08-02 | 3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -72,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 02-autentica-o]: localStorage chosen over sessionStorage for token persistence — With 7-day JWT expiry and automatic renewal, sessionStorage offered no real security benefit for prototype
 - [Phase 02-autentica-o]: Used timezone-aware datetime comparison with fallback for naive SQLite datetimes to prevent runtime TypeError during token expiration check — SQLite stores naive datetimes; comparing offset-naive and offset-aware datetimes raises TypeError. Added tzinfo check in validate_and_consume_token to replace naive with UTC timezone before comparison.
 - [Phase 02-autentica-o]: AuthProvider wraps RouterProvider so useAuth() works inside route components
+- [Phase 08-ux-polish]: Named export UserMenu (not default) for clarity and tree-shaking
+- [Phase 08-ux-polish]: Avatar initials computed from first two words of user.nome, matching Sidebar pattern
 
 ### Pending Todos
 
@@ -91,8 +95,8 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-27
-Stopped at: Phase 5 complete — all 3 plans executed, 37/37 backend tests green, frontend build clean, human UAT deferred
+Last session: 2026-05-13
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
 
 ### UI-SPEC Approved
